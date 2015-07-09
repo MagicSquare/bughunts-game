@@ -1,0 +1,12 @@
+{
+  "name": "HelloIonic",
+  "private": "true",
+  "dependencies": {
+    "angular-gridster": "latest",
+    "jquery": "latest",
+    "javascript-detect-element-resize": "latest"
+  },
+  "devDependencies": {
+    "ionic": "driftyco/ionic-bower#1.0.1"
+  }
+}

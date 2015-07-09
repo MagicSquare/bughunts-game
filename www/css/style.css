@@ -1,0 +1,11 @@
+/* Empty. Add your own CSS if you like */
+
+.gridster-item {
+	/*background-color:#555;
+	border-radius: 5px;*/
+}
+
+ion-content {
+	max-width: 640px;
+	margin: auto;
+}
