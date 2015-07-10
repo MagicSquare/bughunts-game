@@ -1,5 +1,7 @@
 # La chasse aux bugs #
 
+![BugHunts screenshot](screenshots/bughunts.jpg)
+
 ## Dependencies
 
 Dependencies of the web app:
