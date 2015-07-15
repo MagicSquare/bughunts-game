@@ -87,6 +87,40 @@ angular.module('starter.controllers', [])
 	};
 })
 
+.directive('drawing', function(Canvas) {
+
+	function link(scope, element) {
+
+		var canvas = element[0];
+		Canvas.handler.init(canvas);
+
+	 	var time = new Date().getTime();
+		function animate() {
+		    requestAnimationFrame(animate);
+
+		    // http://creativejs.com/resources/requestanimationframe/
+		    var now = new Date().getTime(),
+		        dt = now - (time || now);
+		    time = now;
+
+		    Canvas.handler.update(dt);
+		    Canvas.handler.draw();
+		}
+		animate();
+
+	}
+
+	return {
+		restrict: 'A',
+		link: link,
+		template: 'Test'
+	};
+})
+
+.controller('CanvasCtrl', function($scope, Settings) {
+  
+})
+
 .controller('SettingsCtrl', function($scope, Settings) {
   $scope.settings = Settings;
 });
