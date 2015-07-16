@@ -1,10 +1,12 @@
 define(function(require) {
 
-	var helper = require('js/canvas-game/helper');
+	var helper = require('js/canvas-game/helper'),
+		Point = require('js/canvas-game/point');
 
 	var assets = {
-		ground: { url: 'img/assets/tiles/ground.png', center: false },
-		bug: { url: 'img/assets/tiles/ladybug.png', center: true }
+		grounds: { url: 'img/assets/tiles/grounds.png', center: false },
+		bug: { url: 'img/assets/tiles/ladybug.png', center: true },
+		tileset: { url: 'img/assets/tiles/tiles.png', center: false }
 	};
 
 	function canvasHandler() {
@@ -75,8 +77,37 @@ define(function(require) {
 
 		this.stage.removeChild(this.sprites.ground);
 
-		// Should recompute the ground with this.state values
-		var sprite = new PIXI.Sprite(this.sprites.ground.texture);
+		var resolution = new Point(15, 6);
+		function drawAutotilePart(context, source, autotile, tile, coordinates) {
+			var top = (autotile.y * 6 + tile.y) * 16,
+				left = (autotile.x * 4 + tile.x) * 16;
+
+			context.drawImage(source, left, top, 16, 16, coordinates.x, coordinates.y, 16, 16);
+		}
+		var groundCanvas = document.createElement('canvas');
+		groundCanvas.width = resolution.x * 32;
+		groundCanvas.height = resolution.y * 32;
+		var context = groundCanvas.getContext('2d');
+
+  
+		// Draw the ground
+		var maxX = resolution.x * 2,
+			maxY = resolution.y * 2,
+			tile = {x: 0, y:0};
+		for(var x = 0; x < maxX; ++x) {
+
+			tile.x = (0 === x) ? 0 : (maxX - 1 === x) ? 3 : 1 + x % 2;
+			for(var y = 0; y < maxY; ++y) {
+
+				tile.y = (0 === y) ? 2 : (maxY - 1 === y) ? 5 : 3 + y % 2;
+				drawAutotilePart(context, this.sprites.grounds.texture.baseTexture.source, { x: 5, y: 3 }, { x: tile.x, y:tile.y }, { x: x * 16, y: y * 16 });
+
+			}
+
+		}
+
+		var texture = PIXI.Texture.fromCanvas(groundCanvas);
+		var sprite = new PIXI.Sprite(texture);
 		this.sprites.ground = sprite;
 		this.stage.addChildAt(sprite, 0);
 
