@@ -4,9 +4,9 @@ define(function(require) {
 		Point = require('js/canvas-game/point');
 
 	var assets = {
-		grounds: { url: 'img/assets/tiles/grounds.png', center: false },
-		bug: { url: 'img/assets/tiles/ladybug.png', center: true },
-		tileset: { url: 'img/assets/tiles/tiles.png', center: false }
+		grounds: { url: 'img/assets/tiles/grounds.png', sprite: false, center: false },
+		bug: { url: 'img/assets/tiles/ladybug.png', sprite: true, center: true },
+		tileset: { url: 'img/assets/tiles/tiles.png', sprite: false, center: false }
 	};
 
 	function canvasHandler() {
@@ -16,6 +16,7 @@ define(function(require) {
 		this.animations = [];
 		this.stage = new PIXI.Container();
 		this.sprites = {};
+		this.textures = {};
 		this.squareSize = 32;
 
 	}
@@ -37,10 +38,13 @@ define(function(require) {
 		function onComplete(loader, resources) {
 
 			for(var key in resources) {
-				var sprite = new PIXI.Sprite(resources[key].texture);
-				self.sprites[key] = sprite;
-				if(assets[key].center) {
-					sprite.anchor.set(0.5, 0.5);
+				self.textures[key] = resources[key].texture;
+				if(assets[key].sprite) {
+					var sprite = new PIXI.Sprite(resources[key].texture);
+					self.sprites[key] = sprite;
+					if(assets[key].center) {
+						sprite.anchor.set(0.5, 0.5);
+					}
 				}
 			}
 	    	self.stage.addChild(self.sprites.bug);
@@ -49,6 +53,10 @@ define(function(require) {
 	    	onInitialized();
 
 		}
+
+	}
+
+	canvasHandler.prototype.loadSpritesFromTileset = function loadSpritesFromTileset() {
 
 	}
 
@@ -100,7 +108,7 @@ define(function(require) {
 			for(var y = 0; y < maxY; ++y) {
 
 				tile.y = (0 === y) ? 2 : (maxY - 1 === y) ? 5 : 3 + y % 2;
-				drawAutotilePart(context, this.sprites.grounds.texture.baseTexture.source, { x: 5, y: 3 }, { x: tile.x, y:tile.y }, { x: x * 16, y: y * 16 });
+				drawAutotilePart(context, this.textures.grounds.baseTexture.source, { x: 5, y: 3 }, { x: tile.x, y:tile.y }, { x: x * 16, y: y * 16 });
 
 			}
 
