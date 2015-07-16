@@ -1,5 +1,7 @@
 define(function(require) {
 
+	var helper = require('js/canvas-game/helper');
+
 	var assets = {
 		ground: { url: 'img/assets/tiles/ground.png', center: false },
 		bug: { url: 'img/assets/tiles/ladybug.png', center: true }
@@ -12,12 +14,11 @@ define(function(require) {
 		this.animations = [];
 		this.stage = new PIXI.Container();
 		this.sprites = {};
+		this.squareSize = 32;
 
 	}
 
-	canvasHandler.prototype.init = function init(canvas) {
-
-		this.canvas = canvas;
+	canvasHandler.prototype.init = function init(onInitialized) {
 
 		var loader = PIXI.loader;
 
@@ -40,18 +41,25 @@ define(function(require) {
 					sprite.anchor.set(0.5, 0.5);
 				}
 			}
-			var ground = self.sprites.ground;
 	    	self.stage.addChild(self.sprites.bug);
-
-			self.renderer = new PIXI.autoDetectRenderer(ground.width, ground.height, {view: self.canvas});
-
-			self.animation();
-			self.draw();
-
-			self.drawGround();
+	    	self.sprites.bug.x = self.squareSize / 2;
+	    	self.sprites.bug.y = self.squareSize / 2;
+	    	onInitialized();
 
 		}
 
+	}
+
+	canvasHandler.prototype.setCanvas = function setCanvas(canvas) {
+
+		this.canvas = canvas;
+		if(this.sprites.ground) {
+			this.renderer = new PIXI.autoDetectRenderer(this.sprites.ground.width, this.sprites.ground.height, {view: canvas});
+		}
+		else {
+			this.renderer = new PIXI.autoDetectRenderer(800, 600, {view: canvas});
+
+		}
 	}
 
 	canvasHandler.prototype.draw = function draw() {
@@ -79,11 +87,9 @@ define(function(require) {
 		if(this.renderer) {
 			// Handle time and update animations (if any)
 			this.time += deltaTime;
-			TWEEN.update( this.time );
+			TWEEN.update(window.performance.now());
 
 			// Handle fixed sprites positions
-			this.sprites.bug.x = this.renderer.width / 2;
-			this.sprites.bug.y = this.renderer.height / 2;
 		}
 
 	}
@@ -101,18 +107,59 @@ define(function(require) {
 		
 	}
 
+	canvasHandler.prototype.moveBug = function moveBug(pos, rotation, onComplete) {
+
+		onComplete = helper.getDefault(function() {}, onComplete);
+
+		var bug = this.sprites.bug;
+		this.animation({
+			from: { 
+				x: bug.x,
+				y: bug.y,
+				rotation: bug.rotation
+			},
+			to: {
+				x: ( pos.x + 0.5 ) * this.squareSize,
+				y: ( pos.y + 0.5 ) * this.squareSize,
+				rotation: rotation
+			},
+			onUpdate: function() {
+
+				bug.x = this.x;
+				bug.y = this.y;
+				bug.rotation = this.rotation;
+
+			},
+			onComplete: onComplete
+		});
+
+	},
+
 	canvasHandler.prototype.animation = function animation(options) {
 
+		options = helper.getDefault({}, options);
+		var defaultValues = {
+
+			onUpdate: function() {},
+			onComplete: function() {},
+			duration: 350,
+			delay: 50,
+			from: { x: 0 },
+			to: { x: 1 }
+
+		};
+		helper.getDefaults(defaultValues, options);
+
 		var self = this;
-		t0 = new TWEEN.Tween({ rotation: 0 })
-			.to({ rotation: Math.PI * 2 }, 2000)
-			.delay(100)
-			.repeat(Infinity)
-			.easing(TWEEN.Easing.Cubic.InOut)
-			.onUpdate(function() {
-				self.sprites.bug.rotation = this.rotation;
-		});
-		t0.start();
+		t0 = new TWEEN.Tween(options.from)
+			.to(options.to, options.duration)
+			.delay(options.delay)
+			.easing(TWEEN.Easing.Quadratic.In)
+			.onUpdate(options.onUpdate)
+			.onComplete(options.onComplete)
+		;
+		this.tween = t0;
+		this.tween.start();
 		
 	}
 

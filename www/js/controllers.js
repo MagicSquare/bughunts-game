@@ -94,21 +94,37 @@ angular.module('starter.controllers', [])
 		var canvas = element[0];
 		Canvas.ready = function() {
 
-			Canvas.handler.init(canvas);
-
-		 	var time = new Date().getTime();
-			function animate() {
-			    requestAnimationFrame(animate);
-
-			    // http://creativejs.com/resources/requestanimationframe/
-			    var now = new Date().getTime(),
-			        dt = now - (time || now);
-			    time = now;
-
-			    Canvas.handler.update(dt);
-			    Canvas.handler.draw();
-			}
-			animate();
+			Canvas.handler.setCanvas(canvas);
+			Canvas.game.start();
+			var challenge = [
+				{ bug: { pos: { x: 0, y: 0 }, rotation: Math.PI * 0.5 } },
+				{ bug: { pos: { x: 1, y: 0 }, rotation: Math.PI * 0.5 } },
+				{ bug: { pos: { x: 2, y: 0 }, rotation: Math.PI * 0.5 } },
+				{ bug: { pos: { x: 2, y: 0 }, rotation: Math.PI } },
+				{ bug: { pos: { x: 2, y: 1 }, rotation: Math.PI } },
+				{ bug: { pos: { x: 2, y: 2 }, rotation: Math.PI } },
+				{ bug: { pos: { x: 2, y: 3 }, rotation: Math.PI } },
+				{ bug: { pos: { x: 2, y: 3 }, rotation: Math.PI * 0.5 } },
+				{ bug: { pos: { x: 3, y: 3 }, rotation: Math.PI * 0.5 } },
+				{ bug: { pos: { x: 4, y: 3 }, rotation: Math.PI * 0.5 } },
+				{ bug: { pos: { x: 4, y: 3 }, rotation: Math.PI } },
+				{ bug: { pos: { x: 4, y: 3 }, rotation: Math.PI * 1.5 } },
+				{ bug: { pos: { x: 3, y: 3 }, rotation: Math.PI * 1.5 } },
+				{ bug: { pos: { x: 2, y: 3 }, rotation: Math.PI * 1.5 } },
+				{ bug: { pos: { x: 1, y: 3 }, rotation: Math.PI * 1.5 } },
+				{ bug: { pos: { x: 0, y: 3 }, rotation: Math.PI * 1.5 } },
+				{ bug: { pos: { x: 0, y: 3 }, rotation: Math.PI * 2 } },
+				{ bug: { pos: { x: 0, y: 2 }, rotation: Math.PI * 2 } },
+				{ bug: { pos: { x: 0, y: 1 }, rotation: Math.PI * 2 } },
+				{ bug: { pos: { x: 0, y: 0 }, rotation: Math.PI * 2 } },
+				{ bug: { pos: { x: 0, y: 0 }, rotation: Math.PI * 1.5 } },
+				{ bug: { pos: { x: 0, y: 0 }, rotation: Math.PI * 1 } },
+				{ bug: { pos: { x: 0, y: 0 }, rotation: Math.PI * 0.5 } },
+				{ bug: { pos: { x: 0, y: 0 }, rotation: 0 } }
+			];
+			Canvas.game.runChallenge(challenge, function onComplete() {
+				Canvas.game.runChallenge(challenge, onComplete);
+			});
 
 		};
 		Canvas.load();
