@@ -8,6 +8,20 @@ angular.module('starter.services', [])
 
 .service('Canvas', function() {
 
-  this.handler = new canvasHandler();
+  var self = this;
 
-})
+  this.ready = function() {};
+
+  this.load = function() {
+
+    requirejs(['js/canvas-game/canvasHandler', 'js/canvas-game/game', 'js/canvas-game/point'], function(CanvasHandler, Game) {
+
+      self.handler = new CanvasHandler();
+      self.game = new Game(self.handler);
+      self.ready();
+
+    });
+
+  }
+
+});

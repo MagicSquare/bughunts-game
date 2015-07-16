@@ -92,21 +92,26 @@ angular.module('starter.controllers', [])
 	function link(scope, element) {
 
 		var canvas = element[0];
-		Canvas.handler.init(canvas);
+		Canvas.ready = function() {
 
-	 	var time = new Date().getTime();
-		function animate() {
-		    requestAnimationFrame(animate);
+			Canvas.handler.init(canvas);
 
-		    // http://creativejs.com/resources/requestanimationframe/
-		    var now = new Date().getTime(),
-		        dt = now - (time || now);
-		    time = now;
+		 	var time = new Date().getTime();
+			function animate() {
+			    requestAnimationFrame(animate);
 
-		    Canvas.handler.update(dt);
-		    Canvas.handler.draw();
-		}
-		animate();
+			    // http://creativejs.com/resources/requestanimationframe/
+			    var now = new Date().getTime(),
+			        dt = now - (time || now);
+			    time = now;
+
+			    Canvas.handler.update(dt);
+			    Canvas.handler.draw();
+			}
+			animate();
+
+		};
+		Canvas.load();
 
 	}
 
