@@ -17,9 +17,45 @@ define(function(require) {
 
 	}
 
+	function extractTextureFromCanvas(source, x, y, width, height) {
+
+		var canvas = document.createElement('canvas');
+		canvas.width = width;
+		canvas.height = height;
+		var context = canvas.getContext('2d');
+
+		context.drawImage(source, x, y, width, height, 0, 0, width, height);
+		return PIXI.Texture.fromCanvas(canvas);
+		
+	}
+
+	function lcg(seed) {
+
+		// https://bocoup.com/weblog/random-numbers/
+		var m = 0x80000000,
+		// a - 1 should be divisible by m's prime factors
+		a = 1103515245,
+		// c and m should be co-prime
+		c = 12345;
+
+		// Setting the seed
+		var z = seed;
+
+		return function rand() {
+			// define the recurrence relationship
+			z = (a * z + c) % m;
+			return z / m;
+		};
+
+	}
+
 	return {
 		getDefault: getDefault,
-		getDefaults: getDefaults
+		getDefaults: getDefaults,
+		extractTextureFromCanvas: extractTextureFromCanvas,
+		lcg: lcg
 	}
+
+	
   
 });

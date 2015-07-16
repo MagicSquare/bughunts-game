@@ -15,8 +15,16 @@ define(function(require) {
 
 		this.canvasHandler = canvasHandler;
 
-		var res = new Point(6, 6);
-		this.initialState = new State(new Point(6, 4));
+		this.initialState = new State(new Point(15, 8));
+		for(var i = 0; i < this.initialState.res.y; ++i) {
+			for(var j = 0; j < this.initialState.res.x; ++j) {
+				if(i !== 0 && j !== 0) {
+					if(Math.random() > 0.8) {
+						this.initialState.set({ x: j, y: i }, {type: 's'});
+					}
+				}
+			}
+		}
 
 	}
 
@@ -25,7 +33,7 @@ define(function(require) {
 		var self = this;
 		this.canvasHandler.init(function() {
 
-			self.canvasHandler.drawGround();
+			self.canvasHandler.setState(self.initialState.clone());
 			onInitialized();
 
 		});
@@ -88,49 +96,44 @@ define(function(require) {
 	}
 
 	function State(res) {
-	  
-	  this.res = res;
-	  this.bug = { pos: new Point(0, 0), dir: new Point(1, 0) };
-	  this.mapSize = res.x * res.y;
-	  this.map = [];
-	  for(var i = this.mapSize; i > 0; i--) {
-	    this.map.push( {
-	      state: State.Type.Empty
-	    } );
-	  }
-	  
-	}
 
-	State.Type = {
-	  EMPTY: 0,
-	  STONE: 1
+		this.res = res;
+		this.bug = { pos: new Point(0, 0), dir: new Point(1, 0) };
+		this.mapSize = res.x * res.y;
+		this.map = [];
+		for(var i = this.mapSize; i > 0; i--) {
+			this.map.push( {
+				type: 'o'
+			} );
+		}
+	  
 	}
 
 	State.prototype.get = function(pos) {
-	  
-	  var index = pos.y * res.x + pos.x;
-	  if( index < mapSize ) {
-	    return this.map[index];
-	  }
-	  return null;
-	  
+
+		var index = pos.y * this.res.x + pos.x;
+		if( index < this.mapSize ) {
+			return this.map[index];
+		}
+		return null;
+
 	}
 
 	State.prototype.set = function(pos, square) {
-	  
-	  var index = pos.y * res.x + pos.x;
-	  if( index < mapSize ) {
-	    this.map[index] = square;
-	  }
-	  
+
+		var index = pos.y * this.res.x + pos.x;
+		if( index < this.mapSize ) {
+			this.map[index] = square;
+		}
+
 	}
 
 	State.prototype.clone = function() {
 
-	  var clone = new Point( this.res );
-	  clone.bug = { pos: this.bug.pos.clone(), dir: this.bug.dir.clone() };
-	  clone.map = this.map.slice();
-	  return clone;
+		var clone = new State( this.res );
+		clone.bug = { pos: this.bug.pos.clone(), dir: this.bug.dir.clone() };
+		clone.map = this.map.slice();
+		return clone;
 
 	}
 
