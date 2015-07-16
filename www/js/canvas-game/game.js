@@ -16,15 +16,6 @@ define(function(require) {
 		this.canvasHandler = canvasHandler;
 
 		this.initialState = new State(new Point(15, 8));
-		for(var i = 0; i < this.initialState.res.y; ++i) {
-			for(var j = 0; j < this.initialState.res.x; ++j) {
-				if(i !== 0 && j !== 0) {
-					if(Math.random() > 0.8) {
-						this.initialState.set({ x: j, y: i }, {type: 's'});
-					}
-				}
-			}
-		}
 
 	}
 
@@ -33,7 +24,6 @@ define(function(require) {
 		var self = this;
 		this.canvasHandler.init(function() {
 
-			self.canvasHandler.setState(self.initialState.clone());
 			onInitialized();
 
 		});
@@ -91,7 +81,29 @@ define(function(require) {
 
 	Game.prototype.runStep = function runStep(step, onComplete) {
 
-		this.canvasHandler.moveBug(step.bug.pos, step.bug.rotation, onComplete);
+		var firstCall = true,
+			StR = helper.stringToRotation;
+		function getOnComplete() {
+			if(firstCall) {
+				firstCall = false;
+				return onComplete;
+			}
+			return function() {};
+		}
+
+		for(var i = 0; i < step.length; ++i) {
+			var animation = step[i];
+
+			switch(animation.type) {
+				case 'bug':
+					this.canvasHandler.moveBug(animation.bug.pos, StR(animation.bug.rotation), getOnComplete());
+					break;
+				case 'object':
+					this.canvasHandler.spriteAnimation(animation.name, animation.posFrom, StR(animation.rotationFrom), animation.posTo, StR(animation.rotationTo), getOnComplete());
+					break;
+			}
+		}
+
 
 	}
 

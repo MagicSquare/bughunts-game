@@ -4,9 +4,11 @@ define(function(require) {
 		Point = require('js/canvas-game/point');
 
 	var assets = {
-		grounds: { url: 'img/assets/tiles/grounds.png', sprite: false, center: false },
-		bug: { url: 'img/assets/tiles/ladybug.png', sprite: true, center: true },
-		tileset: { url: 'img/assets/tiles/tiles.png', sprite: false, center: false }
+		grounds: 	{ url: '/tiles/grounds.png', sprite: false, center: false },
+		bug: 		{ url: '/tiles/ladybug.png', sprite: true, center: true },
+		tileset: 	{ url: '/tiles/tiles.png', sprite: false, center: false },
+		bottlecap: 	{ url: '/tiles/bottlecap.png', sprite: false, center: false },
+		axe: 		{ url: '/tiles/axe.png', sprite: false, center: false }
 	};
 
 	function canvasHandler() {
@@ -27,7 +29,7 @@ define(function(require) {
 
 		// Load assets
 		for(var key in assets) {
-			loader.add(key, assets[key].url);
+			loader.add(key, 'img/assets/' + assets[key].url);
 		}
 
 		loader.once('complete', onComplete);
@@ -227,6 +229,63 @@ define(function(require) {
 		
 	}
 
+	canvasHandler.prototype.spriteAnimation = function spriteAnimation(spriteId, posFrom, rotationFrom, posTo, rotationTo, onComplete) {
+
+		var texture = null;
+		switch(spriteId) {
+			case 'bottlecap':
+				texture = this.textures.bottlecap;
+				rotationFrom = 0;
+				rotationTo = Math.PI * 20;
+				break;
+			case 'axe':
+				texture = this.textures.axe;
+				rotationFrom = 0;
+				rotationTo = Math.PI * 10;
+				break;
+		}
+		if(texture !== null) {
+			this.moveTexture(texture, posFrom, rotationFrom, posTo, rotationTo, onComplete);
+		}
+
+	}
+
+	canvasHandler.prototype.moveTexture = function moveTexture(texture, posFrom, rotationFrom, posTo, rotationTo, onComplete) {
+
+		var self = this;
+		onComplete = helper.getDefault(function() {}, onComplete);
+
+		var sprite = new PIXI.Sprite(texture);
+		sprite.anchor.set(0.5, 0.5);
+		this.moveSquareSprite(sprite, posFrom.x, posFrom.y);
+		sprite.rotation = rotationFrom;
+		this.stage.addChild(sprite);
+
+		var onAnimationComplete = function() {
+			self.stage.removeChild(sprite);
+			onComplete();
+		}
+
+		this.animation({
+			from: { 
+				x: posFrom.x,
+				y: posFrom.y,
+				rotation: rotationFrom
+			},
+			to: {
+				x: posTo.x,
+				y: posTo.y,
+				rotation: rotationTo
+			},
+			onUpdate: function() {
+				self.moveSquareSprite(sprite, this.x, this.y);
+				sprite.rotation = this.rotation;
+			},
+			onComplete: onAnimationComplete
+		});
+	},
+
+
 	canvasHandler.prototype.moveBug = function moveBug(pos, rotation, onComplete) {
 
 		onComplete = helper.getDefault(function() {}, onComplete);
@@ -265,7 +324,8 @@ define(function(require) {
 			duration: 350,
 			delay: 50,
 			from: { x: 0 },
-			to: { x: 1 }
+			to: { x: 1 },
+			easing: TWEEN.Easing.Quadratic.InOut
 
 		};
 		helper.getDefaults(defaultValues, options);
@@ -274,7 +334,7 @@ define(function(require) {
 		t0 = new TWEEN.Tween(options.from)
 			.to(options.to, options.duration)
 			.delay(options.delay)
-			.easing(TWEEN.Easing.Quadratic.In)
+			.easing(options.easing)
 			.onUpdate(options.onUpdate)
 			.onComplete(options.onComplete)
 		;

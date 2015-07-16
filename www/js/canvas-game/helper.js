@@ -49,13 +49,36 @@ define(function(require) {
 
 	}
 
+	function stringToRotation(string) {
+
+		switch(string) {
+			case 'U':
+			case 'UP':
+				return 0;
+				break;
+			case 'L':
+			case 'LEFT':
+				return -Math.PI * 0.5;
+				break;
+			case 'R':
+			case 'RIGHT':
+				return Math.PI * 0.5;
+				break;
+			case 'D':
+			case 'DOWN':
+				return Math.PI;
+				break;
+		}
+		return 0;
+
+	}
+
 	return {
 		getDefault: getDefault,
 		getDefaults: getDefaults,
 		extractTextureFromCanvas: extractTextureFromCanvas,
-		lcg: lcg
+		lcg: lcg,
+		stringToRotation: stringToRotation
 	}
-
-	
   
 });
