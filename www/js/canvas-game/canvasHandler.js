@@ -199,6 +199,16 @@ define(function(require) {
 
 	}
 
+	canvasHandler.prototype.removeSquare = function removeElement(x, y) {
+
+		var index = y * this.state.res.x + x;
+		if(index < this.map.length && this.map[index] != null) {
+			this.stage.removeChild(this.map[index]);
+			this.map[index] = null;
+		}
+		
+	}
+
 	canvasHandler.prototype.setState = function setState(state) {
 		
 		this.state = state;
@@ -221,7 +231,7 @@ define(function(require) {
 		this.moveSquareSprite(this.sprites.bug, state.bug.pos.x, state.bug.pos.y);
 		this.stage.addChild(this.sprites.bug);
 
-	};
+	}
 
 	canvasHandler.prototype.move = function move(pos, dir) {
 

@@ -101,6 +101,9 @@ define(function(require) {
 				case 'object':
 					this.canvasHandler.spriteAnimation(animation.name, animation.posFrom, StR(animation.rotationFrom), animation.posTo, StR(animation.rotationTo), getOnComplete());
 					break;
+				case 'del':
+					this.canvasHandler.removeSquare(animation.pos.x, animation.pos.y);
+					break;
 			}
 		}
 

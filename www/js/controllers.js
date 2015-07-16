@@ -116,7 +116,7 @@ angular.module('starter.controllers', [])
 			for(var i = 0; i < stones.length; ++i) {
 				state.set(stones[i], {type: 's'});
 			}
-			Canvas.game.setState(state);
+			Canvas.game.setState(state.clone());
 
 			Canvas.handler.setCanvas(canvas);
 			Canvas.game.start();
@@ -126,7 +126,12 @@ angular.module('starter.controllers', [])
 					{ type: 'bug', bug: { pos: { x: 1, y: 0 }, rotation: 'R' } },
 					{ type: 'object', name: 'bottlecap', posFrom: { x: 0, y: 0 }, rotationFrom: 0, posTo: { x: 8, y: 0 }, rotationTo: 0 }
 				],
-				[{ type: 'bug', bug: { pos: { x: 2, y: 0 }, rotation: 'R' } }],
+				[
+					{ type: 'bug', bug: { pos: { x: 2, y: 0 }, rotation: 'R' } },
+					{ type: 'del', pos: { x: 4, y: 0 } },
+					{ type: 'del', pos: { x: 5, y: 0 } },
+					{ type: 'del', pos: { x: 6, y: 0 } }
+				],
 				[{ type: 'bug', bug: { pos: { x: 2, y: 0 }, rotation: 'D' } }],
 				[
 					{ type: 'bug', bug: { pos: { x: 2, y: 1 }, rotation: 'D' } },
@@ -134,9 +139,13 @@ angular.module('starter.controllers', [])
 				],
 				[
 					{ type: 'bug', bug: { pos: { x: 2, y: 2 }, rotation: 'D' } },
-					{ type: 'object', name: 'axe', posFrom: { x: 2, y: 1 }, rotationFrom: 0, posTo: { x: 2, y: 4 }, rotationTo: 0 }
+					{ type: 'object', name: 'axe', posFrom: { x: 2, y: 1 }, rotationFrom: 0, posTo: { x: 2, y: 4 }, rotationTo: 0 },
+					{ type: 'del', pos: { x: 2, y: 3 } }
 				],
-				[{ type: 'bug', bug: { pos: { x: 2, y: 3 }, rotation: 'D' } }],
+				[
+					{ type: 'bug', bug: { pos: { x: 2, y: 3 }, rotation: 'D' } },
+					{ type: 'del', pos: { x: 2, y: 4 } }
+				],
 				[{ type: 'bug', bug: { pos: { x: 2, y: 3 }, rotation: 'R' } }],
 				[{ type: 'bug', bug: { pos: { x: 3, y: 3 }, rotation: 'R' } }],
 				[{ type: 'bug', bug: { pos: { x: 4, y: 3 }, rotation: 'R' } }],
@@ -152,6 +161,7 @@ angular.module('starter.controllers', [])
 				[{ type: 'bug', bug: { pos: { x: 0, y: 0 }, rotation: 'U' } }]
 			];
 			Canvas.game.runChallenge(challenge, function onComplete() {
+				Canvas.game.setState(state.clone());
 				Canvas.game.runChallenge(challenge, onComplete);
 			});
 
