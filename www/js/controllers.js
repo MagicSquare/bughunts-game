@@ -124,7 +124,7 @@ angular.module('starter.controllers', [])
 				[{ type: 'bug', bug: { pos: { x: 0, y: 0 }, rotation: 'R' } }],
 				[
 					{ type: 'bug', bug: { pos: { x: 1, y: 0 }, rotation: 'R' } },
-					{ type: 'object', name: 'bottlecap', posFrom: { x: 0, y: 0 }, rotationFrom: 0, posTo: { x: 8, y: 0 }, rotationTo: 0 }
+					{ type: 'object', name: 'bottlecap', posFrom: { x: 0, y: 0 }, rotationFrom: 0, posTo: { x: 6, y: 0 }, rotationTo: 0, duration: 2.5 }
 				],
 				[
 					{ type: 'bug', bug: { pos: { x: 2, y: 0 }, rotation: 'R' } },
@@ -135,11 +135,11 @@ angular.module('starter.controllers', [])
 				[{ type: 'bug', bug: { pos: { x: 2, y: 0 }, rotation: 'D' } }],
 				[
 					{ type: 'bug', bug: { pos: { x: 2, y: 1 }, rotation: 'D' } },
-					{ type: 'object', name: 'axe', posFrom: { x: 2, y: 0 }, rotationFrom: 0, posTo: { x: 2, y: 3 }, rotationTo: 0 }
+					{ type: 'object', name: 'axe', posFrom: { x: 2, y: 0 }, rotationFrom: 0, posTo: { x: 2, y: 3 }, rotationTo: 0, duration: 2.5 }
 				],
 				[
 					{ type: 'bug', bug: { pos: { x: 2, y: 2 }, rotation: 'D' } },
-					{ type: 'object', name: 'axe', posFrom: { x: 2, y: 1 }, rotationFrom: 0, posTo: { x: 2, y: 4 }, rotationTo: 0 },
+					{ type: 'object', name: 'axe', posFrom: { x: 2, y: 1 }, rotationFrom: 0, posTo: { x: 2, y: 4 }, rotationTo: 0, duration: 2.5 },
 					{ type: 'del', pos: { x: 2, y: 3 } }
 				],
 				[

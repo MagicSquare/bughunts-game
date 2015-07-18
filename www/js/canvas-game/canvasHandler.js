@@ -20,6 +20,7 @@ define(function(require) {
 		this.sprites = {};
 		this.textures = {};
 		this.squareSize = 32;
+		this.animationDuration = 350;
 
 	}
 
@@ -239,7 +240,7 @@ define(function(require) {
 		
 	}
 
-	canvasHandler.prototype.spriteAnimation = function spriteAnimation(spriteId, posFrom, rotationFrom, posTo, rotationTo, onComplete) {
+	canvasHandler.prototype.spriteAnimation = function spriteAnimation(duration, spriteId, posFrom, rotationFrom, posTo, rotationTo, onComplete) {
 
 		var texture = null;
 		switch(spriteId) {
@@ -255,12 +256,12 @@ define(function(require) {
 				break;
 		}
 		if(texture !== null) {
-			this.moveTexture(texture, posFrom, rotationFrom, posTo, rotationTo, onComplete);
+			this.moveTexture(duration, texture, posFrom, rotationFrom, posTo, rotationTo, onComplete);
 		}
 
 	}
 
-	canvasHandler.prototype.moveTexture = function moveTexture(texture, posFrom, rotationFrom, posTo, rotationTo, onComplete) {
+	canvasHandler.prototype.moveTexture = function moveTexture(duration, texture, posFrom, rotationFrom, posTo, rotationTo, onComplete) {
 
 		var self = this;
 		onComplete = helper.getDefault(function() {}, onComplete);
@@ -277,6 +278,7 @@ define(function(require) {
 		}
 
 		this.animation({
+			duration: duration,
 			from: { 
 				x: posFrom.x,
 				y: posFrom.y,
@@ -287,6 +289,7 @@ define(function(require) {
 				y: posTo.y,
 				rotation: rotationTo
 			},
+			easing: TWEEN.Easing.Quadratic.In,
 			onUpdate: function() {
 				self.moveSquareSprite(sprite, this.x, this.y);
 				sprite.rotation = this.rotation;
@@ -296,12 +299,13 @@ define(function(require) {
 	},
 
 
-	canvasHandler.prototype.moveBug = function moveBug(pos, rotation, onComplete) {
+	canvasHandler.prototype.moveBug = function moveBug(duration, pos, rotation, onComplete) {
 
 		onComplete = helper.getDefault(function() {}, onComplete);
 
 		var bug = this.sprites.bug;
 		this.animation({
+			duration: duration,
 			from: { 
 				x: bug.x,
 				y: bug.y,
@@ -340,16 +344,14 @@ define(function(require) {
 		};
 		helper.getDefaults(defaultValues, options);
 
-		var self = this;
-		t0 = new TWEEN.Tween(options.from)
-			.to(options.to, options.duration)
+		var tweenAnimation = new TWEEN.Tween(options.from)
+			.to(options.to, options.duration * this.animationDuration)
 			.delay(options.delay)
 			.easing(options.easing)
 			.onUpdate(options.onUpdate)
 			.onComplete(options.onComplete)
 		;
-		this.tween = t0;
-		this.tween.start();
+		tweenAnimation.start();
 		
 	}
 

@@ -83,23 +83,35 @@ define(function(require) {
 
 		var firstCall = true,
 			StR = helper.stringToRotation;
-		function getOnComplete() {
-			if(firstCall) {
+		function getOnComplete(longestAnimation, i, animation) {
+			if(firstCall && longestAnimation === i && animation.type != 'del') {
 				firstCall = false;
 				return onComplete;
 			}
 			return function() {};
 		}
 
+		var longestDuration = 0,
+			longestAnimation = 0;
 		for(var i = 0; i < step.length; ++i) {
-			var animation = step[i];
+			var duration = helper.getDefault(1, step[i].duration);
+			if(duration > longestDuration) {
+				longestDuration = duration;
+				longestAnimation = i;
+			}
+		}
+
+		for(var i = 0; i < step.length; ++i) {
+			var animation = step[i],
+				duration = helper.getDefault(1, animation.duration),
+				completeCallback = getOnComplete(longestAnimation, i, animation);
 
 			switch(animation.type) {
 				case 'bug':
-					this.canvasHandler.moveBug(animation.bug.pos, StR(animation.bug.rotation), getOnComplete());
+					this.canvasHandler.moveBug(duration, animation.bug.pos, StR(animation.bug.rotation), completeCallback);
 					break;
 				case 'object':
-					this.canvasHandler.spriteAnimation(animation.name, animation.posFrom, StR(animation.rotationFrom), animation.posTo, StR(animation.rotationTo), getOnComplete());
+					this.canvasHandler.spriteAnimation(duration, animation.name, animation.posFrom, StR(animation.rotationFrom), animation.posTo, StR(animation.rotationTo), completeCallback);
 					break;
 				case 'del':
 					this.canvasHandler.removeSquare(animation.pos.x, animation.pos.y);
