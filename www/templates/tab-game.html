@@ -1,40 +1,39 @@
 <ion-view view-title="La chasse aux bugs">
-  <ion-content class="padding">
-    <div class="row responsive-sm">
-      <div class="col">
-        
-        <img ng-src="{{gameImage}}" alt="Game" style="width:100%"/>
-
-      </div>
-
-      <div class="col col-33" style="max-width: 200px; margin: auto;">
-
-        <div class="card" style="margin-top: 0px;">
-          <div class="row">
-            <div class="col" ng-repeat="tommette in tommettes" style="margin-bottom: 0px; padding: 2px;">
-              <img ng-src="{{getTommetteUrl(tommette)}}" alt="{{tommette}}" ng-click="handleTommette(tommette)" style="width:100%"/>
+    <ion-content class="padding">
+        <div class="row responsive-sm">
+            <div class="col">
+                <img ng-src="{{ gameImage }}" alt="Game" style="width:100%"/>
             </div>
-          </div>
-        </div>
-
-        <div class="card">
-
-            <div gridster="gridsterOpts">
-              <ul>
-                <li gridster-item="item.gridster" ng-repeat="item in tablet">
-                  <img src="{{getTommetteUrl(item.icon)}}" alt="{{item.icon}}" style="width:100%"/>
-                </li>
-              </ul>
+            <div class="col col-33" style="max-width: 200px; margin: auto;">
+                <div class="card" style="margin-top: 0px;">
+                    <div class="row">
+                        <div class="col" ng-repeat="tommette in tommettes" style="margin-bottom: 0px; padding: 2px;">
+                            <img ng-src="{{ getTommetteUrl(tommette) }}" alt="{{ tommette }}"
+                                 ng-click="handleTommette(tommette)" style="width:100%"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div gridster="gridsterOpts">
+                        <ul>
+                            <li gridster-item="item.gridster" ng-repeat="item in tablet">
+                                <img src="{{ getTommetteUrl(item.icon) }}" alt="{{ item.icon }}" style="width:100%"/>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div>
+                    <button class="button button-dark icon ion-play" ng-click="run()"></button>
+                </div>
             </div>
-
+        </div>
+        <div class="row responsive-sm">
+            <a href="http://fr.ulule.com/chasseauxbugs" target="_blank">
+                <img border="0" alt="Ulule" src="../img/ulule.png" width="50" height="50">
+            </a>
+            <div class="fb-like" data-href="https://www.facebook.com/LaChasseAuxBugs" data-layout="standard"
+                 data-action="like" data-show-faces="true" data-share="false"></div>
         </div>
 
-        <div>
-          <button class="button button-dark icon ion-play" ng-click="run()"></button>
-        </div>
-
-      </div>
-
-    </div>
-  </ion-content>
+    </ion-content>
 </ion-view>
