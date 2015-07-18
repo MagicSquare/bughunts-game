@@ -61,6 +61,7 @@ define(function(require) {
 
 		sprite.x = ( x + 0.5 ) * this.squareSize;
 		sprite.y = ( y + 0.5 ) * this.squareSize;
+
 	}
 
 	canvasHandler.prototype.loadTexturesFromTileset = function loadTexturesFromTileset() {
@@ -94,6 +95,7 @@ define(function(require) {
 			{ x: 7, y: 4 },
 			{ x: 3, y: 6 }
 		]);
+
 	}
 
 	canvasHandler.prototype.setCanvas = function setCanvas(canvas) {
@@ -106,6 +108,7 @@ define(function(require) {
 			this.renderer = new PIXI.autoDetectRenderer(800, 600, {view: canvas});
 
 		}
+
 	}
 
 	canvasHandler.prototype.draw = function draw() {
@@ -234,12 +237,6 @@ define(function(require) {
 
 	}
 
-	canvasHandler.prototype.move = function move(pos, dir) {
-
-
-		
-	}
-
 	canvasHandler.prototype.spriteAnimation = function spriteAnimation(duration, spriteId, posFrom, rotationFrom, posTo, rotationTo, onComplete) {
 
 		var texture = null;
@@ -296,8 +293,8 @@ define(function(require) {
 			},
 			onComplete: onAnimationComplete
 		});
-	},
 
+	}
 
 	canvasHandler.prototype.moveBug = function moveBug(duration, pos, rotation, onComplete) {
 
@@ -326,7 +323,7 @@ define(function(require) {
 			onComplete: onComplete
 		});
 
-	},
+	}
 
 	canvasHandler.prototype.animation = function animation(options) {
 
@@ -353,12 +350,6 @@ define(function(require) {
 		;
 		tweenAnimation.start();
 		
-	}
-
-	canvasHandler.prototype.animationText = function animationText(options) {
-
-
-
 	}
 
 	return canvasHandler;
