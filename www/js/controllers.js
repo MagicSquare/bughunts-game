@@ -27,8 +27,19 @@ angular.module('starter.controllers', [])
 		$http.jsonp(url)
 			.success(function(data) {
 				$scope.gameImage = data.image;
+                $scope.result = data;
 			});
 	}
+
+    $scope.shareScore = function(){
+        FB.ui({
+            method: 'share_open_graph',
+            action_type: 'games.celebrate',
+            action_properties: JSON.stringify({
+                victory:Settings.host + '/victory/'+$scope.result.challenge+'/'+$scope.result.command
+            })
+        }, function(response){});
+    }
 
 	$scope.handleTommette = function handleTommette(icon) {
 		if('remove' === icon) {

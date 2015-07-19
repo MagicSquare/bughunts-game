@@ -27,6 +27,17 @@
                 </div>
             </div>
         </div>
+        <div ng-if="result" class="row">
+            <div class="col">
+                <div class="card">
+                    <p ng-class="{balanced: result.win}">
+                        {{result.message}}
+                    </p>
+                    <button class="button button-dark icon ion-share" ng-click="shareScore()"></button>
+                </div>
+            </div>
+        </div>
+
         <div class="row">
             <div id="fb-like" class="col fb-page" data-href="https://www.facebook.com/LaChasseAuxBugs" data-small-header="false" data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="false" data-show-posts="false"><div class="fb-xfbml-parse-ignore"><blockquote cite="https://www.facebook.com/LaChasseAuxBugs"><a href="https://www.facebook.com/LaChasseAuxBugs">La Chasse Aux Bugs</a></blockquote></div></div>
         </div>
