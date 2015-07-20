@@ -36,7 +36,7 @@ angular.module('starter.controllers', [])
             method: 'share_open_graph',
             action_type: 'games.celebrate',
             action_properties: JSON.stringify({
-                victory:Settings.host + '/victory/'+$scope.result.challenge+'/'+$scope.result.command
+                victory:Settings.host + '/victory/'+encodeURIComponent($scope.result.challenge)+'/'+$scope.result.command.split(' ').join(',')
             })
         }, function(response){});
     };
@@ -89,7 +89,7 @@ angular.module('starter.controllers', [])
 	    outerMargin: true,
 	    mobileModeEnabled: false,
 	    resizable: {
-	       enabled: false,
+	       enabled: false
 	    },
 	    draggable: {
 	       enabled: true,
