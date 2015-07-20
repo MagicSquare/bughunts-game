@@ -10,14 +10,14 @@ angular.module('starter.controllers', [])
 	$scope.gameImage = 'https://placeholdit.imgix.net/~text?txtsize=23&txt=Chargement...&w=300&h=300';
 	$scope.getTommetteUrl = function getTommetteUrl(tommette) {
 		return 'img/icons/' + tommette + '.png';
-	}
+	};
 
 	$scope.clear = function clear() {
 		$scope.tablet = [];
 	};
 
 	$scope.run = function run() {
-		var commands = []
+		var commands = [];
 		for(var i = 0; i < $scope.tablet.length; ++i) {
 			commands.push($scope.tommettesCmd[$scope.tablet[i].icon]);
 		}
@@ -27,8 +27,19 @@ angular.module('starter.controllers', [])
 		$http.jsonp(url)
 			.success(function(data) {
 				$scope.gameImage = data.image;
+                $scope.result = data;
 			});
-	}
+	};
+
+    $scope.shareScore = function(){
+        FB.ui({
+            method: 'share_open_graph',
+            action_type: 'games.celebrate',
+            action_properties: JSON.stringify({
+                victory:Settings.host + '/victory/'+$scope.result.challenge+'/'+$scope.result.command
+            })
+        }, function(response){});
+    };
 
 	$scope.handleTommette = function handleTommette(icon) {
 		if('remove' === icon) {
