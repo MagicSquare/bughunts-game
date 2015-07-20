@@ -1,0 +1,7 @@
+Options +FollowSymLinks
+
+RewriteEngine On
+
+RewriteBase /
+
+RewriteRule ^service/(.*)$ http://dev.pierrepironin.fr:8111/$1 [R,NC,L]
