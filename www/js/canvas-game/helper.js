@@ -73,12 +73,29 @@ define(function(require) {
 
 	}
 
+	function dirToRotation(direction) {
+
+		return Math.atan2( direction.x, -direction.y );
+
+	}
+
+	function rotationToDir(rotation) {
+
+		return { 
+			x: Math.sin(rotation), 
+			y: -Math.cos(rotation) 
+		};
+		
+	}
+
 	return {
 		getDefault: getDefault,
 		getDefaults: getDefaults,
 		extractTextureFromCanvas: extractTextureFromCanvas,
 		lcg: lcg,
-		stringToRotation: stringToRotation
+		stringToRotation: stringToRotation,
+		dirToRotation: dirToRotation,
+		rotationToDir: rotationToDir
 	}
   
 });
