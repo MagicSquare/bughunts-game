@@ -117,6 +117,58 @@ angular.module('starter.controllers', [])
   $scope.settings = Settings;
 })
 
+.controller('EditorCtrl', function($scope, LevelEditor) {
+
+	$scope.challenge = {
+		res : { x: 10, y: 6 },
+		map : []
+	};
+
+	$scope.onStateChanged = function onStateChanged() {};
+
+	$scope.getNumber = function getNumber(num) {
+		var array = [];
+		for(var i = 0; i < num; ++i)
+			array.push(i);
+		return array;
+	};
+
+	$scope.onResChanged = function onResChanged() {
+		map = $scope.challenge.map;
+
+		map = map.slice(Math.min(map.length, $scope.challenge.res.y));
+		for(var i = 0; i < $scope.challenge.res.y; ++i) {
+			var line = [];
+			if(map.length < i + 1) {
+				map.push(line);
+			}
+			else {
+				line = map[i];
+			}
+			line = line.slice(Math.min(line.length, $scope.challenge.res.x));
+			for(var j = 0; j < $scope.challenge.res.x; ++j) {
+				if(line.length < j + 1) {
+					line.push('o');
+				}
+			}
+			map[i] = line;
+		}
+		$scope.challenge.map = map;
+		$scope.onStateChanged();
+	};
+	$scope.onResChanged();
+  
+	LevelEditor.ready = function() {
+
+		$scope.onStateChanged = function onStateChanged() {
+			LevelEditor.game.parseChallengeTry($scope.challenge);
+		};
+		$scope.onStateChanged();
+
+	}
+
+})
+
 .directive('bughunts', function(Canvas) {
 
 	function link(scope, element) {
@@ -128,7 +180,21 @@ angular.module('starter.controllers', [])
 
 	return {
 		restrict: 'A',
-		link: link,
-		template: 'Test'
+		link: link
+	};
+})
+
+.directive('bughuntseditor', function(LevelEditor) {
+
+	function link(scope, element) {
+
+		LevelEditor.domCanvas = element[0];
+		LevelEditor.load();
+
+	}
+
+	return {
+		restrict: 'A',
+		link: link
 	};
 });

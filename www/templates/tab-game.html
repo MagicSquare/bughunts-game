@@ -18,7 +18,7 @@
                     <div gridster="gridsterOpts">
                         <ul>
                             <li gridster-item="item.gridster" ng-repeat="item in tablet">
-                                <img src="{{ getTommetteUrl(item.icon) }}" alt="{{ item.icon }}" style="width:100%"/>
+                                <img ng-src="{{ getTommetteUrl(item.icon) }}" alt="{{ item.icon }}" style="width:100%"/>
                             </li>
                         </ul>
                     </div>

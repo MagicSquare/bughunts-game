@@ -48,6 +48,16 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
     }
   })
 
+  .state('tab.editor', {
+    url: '/editor',
+    views: {
+      'tab-editor': {
+        templateUrl: 'templates/tab-editor.html',
+        controller: 'EditorCtrl'
+      }
+    }
+  })
+
   .state('tab.settings', {
     url: '/settings',
     views: {
