@@ -20,7 +20,7 @@ define(function(require) {
 		this.sprites = {};
 		this.textures = {};
 		this.squareSize = 32;
-		this.animationDuration = 350;
+		this.animationDuration = 200;
 
 	}
 
@@ -80,8 +80,9 @@ define(function(require) {
 			}
 		}
 
+		var source = this.textures.tileset.baseTexture.source;
 		this.textures.stones = [];
-		loadGroupOfTextures(this.textures.stones, this.textures.tileset.baseTexture.source, [
+		loadGroupOfTextures(this.textures.stones, source, [
 			{ x: 7, y: 2 },
 			{ x: 4, y: 3 },
 			{ x: 6, y: 3 },
@@ -89,12 +90,14 @@ define(function(require) {
 		]);
 
 		this.textures.grass = [];
-		loadGroupOfTextures(this.textures.grass, this.textures.tileset.baseTexture.source, [
+		loadGroupOfTextures(this.textures.grass, source, [
 			{ x: 2, y: 2 },
 			{ x: 6, y: 4 },
 			{ x: 7, y: 4 },
 			{ x: 3, y: 6 }
 		]);
+
+		this.textures.goal = helper.extractTextureFromCanvas(source, 4 * this.squareSize, 9 * this.squareSize, this.squareSize, this.squareSize);
 
 	}
 
@@ -187,6 +190,9 @@ define(function(require) {
 			case 's':
 				texture = this.textures.stones[Math.floor(this.textures.stones.length * this.rand())];
 				break;
+			case 'g':
+				texture = this.textures.goal;
+				break;
 			default:
 				break;
 		}
@@ -220,6 +226,7 @@ define(function(require) {
 
 		this.stage = new PIXI.Container();
 		this.drawGround();
+		this.renderer.resize(this.sprites.ground.width, this.sprites.ground.height);
 
 		// Add special squares on the map
 		this.map = [];
@@ -241,6 +248,7 @@ define(function(require) {
 
 		var texture = null;
 		switch(spriteId) {
+			case 'missile':
 			case 'bottlecap':
 				texture = this.textures.bottlecap;
 				rotationFrom = 0;

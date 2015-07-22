@@ -1,13 +1,13 @@
 angular.module('starter.controllers', [])
 
-.controller('GameCtrl', function($scope, $http, Settings) {
+.controller('GameCtrl', function($scope, $http, Settings, Canvas) {
 
 	var tabletSize = 4;
 
 	$scope.tablet = [];
 	$scope.tommettes = ['left', 'forward', 'right', 'back', 'remove'];
 	$scope.tommettesCmd = {'left': 'LE', 'forward': 'FO', 'right': 'RI', 'back': 'BA'};
-	$scope.gameImage = 'https://placeholdit.imgix.net/~text?txtsize=23&txt=Chargement...&w=300&h=300';
+	//$scope.gameImage = 'https://placeholdit.imgix.net/~text?txtsize=23&txt=Chargement...&w=300&h=300';
 	$scope.getTommetteUrl = function getTommetteUrl(tommette) {
 		return 'img/icons/' + tommette + '.png';
 	};
@@ -23,15 +23,25 @@ angular.module('starter.controllers', [])
 		}
 		var command = commands.join(' ');
 		var url = Settings.host + '/command/' + command + '?callback=JSON_CALLBACK';
-		console.log(url);
+
 		$http.jsonp(url)
 			.success(function(data) {
-				$scope.gameImage = data.image;
-                $scope.result = data;
+				//$scope.gameImage = data.image;
+				if(Canvas.isReady) {
+					Canvas.game.parseChallengeTry(data, function() {
+						$scope.result = data;
+					});
+				}
+				else {
+					$scope.result = data;
+				}
+			})
+			.error(function(data, status) {
+				console.log('Loading command result: Error ' + status);
 			});
 	};
 
-    $scope.shareScore = function(){
+    $scope.shareScore = function shareScore(){
         FB.ui({
             method: 'share_open_graph',
             action_type: 'games.celebrate',
@@ -65,16 +75,21 @@ angular.module('starter.controllers', [])
 		}
 	};
 
-	$scope.handleTommette('forward');
-	$scope.run();
+	Canvas.ready = function() {
+
+		$scope.handleTommette('forward');
+		$scope.run();
+
+	}
 
 	function orderTommettes() {
-		console.log('order');
+
 		$scope.tablet.sort(function(a, b) {
 			if(a.gridster.row != b.gridster.row)
 				return a.gridster.row - b.gridster.row;
 			return a.gridster.col - b.gridster.col;
 		});
+
 	}
 
 	$scope.gridsterOpts = {
@@ -98,10 +113,6 @@ angular.module('starter.controllers', [])
 	};
 })
 
-.controller('CanvasCtrl', function($scope, Settings) {
-  
-})
-
 .controller('SettingsCtrl', function($scope, Settings) {
   $scope.settings = Settings;
 })
@@ -110,73 +121,7 @@ angular.module('starter.controllers', [])
 
 	function link(scope, element) {
 
-		var canvas = element[0];
-		Canvas.ready = function() {
-
-			var state = Canvas.game.initialState;
-			var stones = [
-				{x: 1, y: 1},
-				{x: 4, y: 0},
-				{x: 5, y: 0},
-				{x: 6, y: 0},
-				{x: 2, y: 3},
-				{x: 2, y: 4},
-				{x: 5, y: 5},
-				{x: 10, y: 5}
-			];
-			for(var i = 0; i < stones.length; ++i) {
-				state.set(stones[i], {type: 's'});
-			}
-			Canvas.game.setState(state.clone());
-
-			Canvas.handler.setCanvas(canvas);
-			Canvas.game.start();
-			var challenge = [
-				[{ type: 'bug', bug: { pos: { x: 0, y: 0 }, rotation: 'R' } }],
-				[
-					{ type: 'bug', bug: { pos: { x: 1, y: 0 }, rotation: 'R' } },
-					{ type: 'object', name: 'bottlecap', posFrom: { x: 0, y: 0 }, rotationFrom: 0, posTo: { x: 6, y: 0 }, rotationTo: 0, duration: 2.5 }
-				],
-				[
-					{ type: 'bug', bug: { pos: { x: 2, y: 0 }, rotation: 'R' } },
-					{ type: 'del', pos: { x: 4, y: 0 } },
-					{ type: 'del', pos: { x: 5, y: 0 } },
-					{ type: 'del', pos: { x: 6, y: 0 } }
-				],
-				[{ type: 'bug', bug: { pos: { x: 2, y: 0 }, rotation: 'D' } }],
-				[
-					{ type: 'bug', bug: { pos: { x: 2, y: 1 }, rotation: 'D' } },
-					{ type: 'object', name: 'axe', posFrom: { x: 2, y: 0 }, rotationFrom: 0, posTo: { x: 2, y: 3 }, rotationTo: 0, duration: 2.5 }
-				],
-				[
-					{ type: 'bug', bug: { pos: { x: 2, y: 2 }, rotation: 'D' } },
-					{ type: 'object', name: 'axe', posFrom: { x: 2, y: 1 }, rotationFrom: 0, posTo: { x: 2, y: 4 }, rotationTo: 0, duration: 2.5 },
-					{ type: 'del', pos: { x: 2, y: 3 } }
-				],
-				[
-					{ type: 'bug', bug: { pos: { x: 2, y: 3 }, rotation: 'D' } },
-					{ type: 'del', pos: { x: 2, y: 4 } }
-				],
-				[{ type: 'bug', bug: { pos: { x: 2, y: 3 }, rotation: 'R' } }],
-				[{ type: 'bug', bug: { pos: { x: 3, y: 3 }, rotation: 'R' } }],
-				[{ type: 'bug', bug: { pos: { x: 4, y: 3 }, rotation: 'R' } }],
-				[{ type: 'bug', bug: { pos: { x: 4, y: 3 }, rotation: 'D' } }],
-				[{ type: 'bug', bug: { pos: { x: 4, y: 3 }, rotation: 'L' } }],
-				[{ type: 'bug', bug: { pos: { x: 3, y: 3 }, rotation: 'L' } }],
-				[{ type: 'bug', bug: { pos: { x: 2, y: 3 }, rotation: 'L' } }],
-				[{ type: 'bug', bug: { pos: { x: 1, y: 3 }, rotation: 'L' } }],
-				[{ type: 'bug', bug: { pos: { x: 0, y: 3 }, rotation: 'L' } }],
-				[{ type: 'bug', bug: { pos: { x: 0, y: 3 }, rotation: 'U' } }],
-				[{ type: 'bug', bug: { pos: { x: 0, y: 2 }, rotation: 'U' } }],
-				[{ type: 'bug', bug: { pos: { x: 0, y: 1 }, rotation: 'U' } }],
-				[{ type: 'bug', bug: { pos: { x: 0, y: 0 }, rotation: 'U' } }]
-			];
-			Canvas.game.runChallenge(challenge, function onComplete() {
-				Canvas.game.setState(state.clone());
-				Canvas.game.runChallenge(challenge, onComplete);
-			});
-
-		};
+		Canvas.domCanvas = element[0];
 		Canvas.load();
 
 	}

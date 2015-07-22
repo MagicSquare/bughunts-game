@@ -36,15 +36,15 @@ define(function(require) {
 	 	var self = this;
 
 		function animate() {
-		    requestAnimationFrame(animate);
+			requestAnimationFrame(animate);
 
-		    // http://creativejs.com/resources/requestanimationframe/
-		    var now = new Date().getTime(),
-		        dt = now - (time || now);
-		    time = now;
+			// http://creativejs.com/resources/requestanimationframe/
+			var now = new Date().getTime(),
+				dt = now - (time || now);
+			time = now;
 
-		    self.canvasHandler.update(dt);
-		    self.canvasHandler.draw();
+			self.canvasHandler.update(dt);
+			self.canvasHandler.draw();
 		}
 		animate();
 
@@ -54,6 +54,20 @@ define(function(require) {
 
 		this.initialState = state;
 		this.canvasHandler.setState(state.clone());
+
+	}
+
+	Game.prototype.parseChallengeTry = function parseChallengeTry(data, onComplete) {
+
+		onComplete = helper.getDefault(function() {}, onComplete);
+		var state = State.from2DArray(data.map);
+		this.setState(state);
+		if(typeof data.details != 'undefined') {
+			this.runChallenge(data.details, onComplete);
+		}
+		else {
+			onComplete();
+		}
 
 	}
 
@@ -108,7 +122,14 @@ define(function(require) {
 
 			switch(animation.type) {
 				case 'bug':
-					this.canvasHandler.moveBug(duration, animation.bug.pos, StR(animation.bug.rotation), completeCallback);
+					var rotation = 0;
+					if(typeof animation.bug.dir !== 'undefined') {
+						rotation = helper.dirToRotation(animation.bug.dir);
+					}
+					else {
+						rotation = helper.stringToRotation(animation.bug.rotation);
+					}
+					this.canvasHandler.moveBug(duration, animation.bug.pos, rotation, completeCallback);
 					break;
 				case 'object':
 					this.canvasHandler.spriteAnimation(duration, animation.name, animation.posFrom, StR(animation.rotationFrom), animation.posTo, StR(animation.rotationTo), completeCallback);
@@ -161,6 +182,28 @@ define(function(require) {
 		clone.bug = { pos: this.bug.pos.clone(), dir: this.bug.dir.clone() };
 		clone.map = this.map.slice();
 		return clone;
+
+	}
+
+	State.from2DArray = function(array) {
+
+		var res = new Point(array[0].length, array.length);
+		var state = new State(res);
+
+		for(var i = 0; i < res.y; ++i) {
+			for(var j = 0; j < res.x; ++j) {
+
+				var square = array[i][j];
+				if(square != 'l' && square != 'o') {
+					state.set( {x: j, y: i }, {type: square})
+				}
+				else if(square == 'l') {
+					state.bug.pos.set(j, i);
+				}
+			}
+		}
+
+		return state;
 
 	}
 

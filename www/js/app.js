@@ -48,16 +48,6 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
     }
   })
 
-  .state('tab.canvas', {
-    url: '/canvas',
-    views: {
-      'tab-canvas': {
-        templateUrl: 'templates/tab-canvas.html',
-        controller: 'CanvasCtrl'
-      }
-    }
-  })
-
   .state('tab.settings', {
     url: '/settings',
     views: {

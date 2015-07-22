@@ -9,6 +9,8 @@ angular.module('starter.services', [])
 .service('Canvas', function() {
 
   var self = this;
+  this.isReady = false;
+  this.domCanvas = null;
 
   this.ready = function() {};
 
@@ -19,7 +21,13 @@ angular.module('starter.services', [])
       self.handler = new CanvasHandler();
       self.game = new Game(self.handler);
       self.game.init(function() {
+
+        self.isReady = true;
+        self.handler.setCanvas(self.domCanvas);
+        self.game.start();
+
         self.ready();
+
       });
 
     });
