@@ -110,7 +110,7 @@ define(function(require) {
 			self.bugSpriteTexture = 0;
 			var sprite = new PIXI.Sprite(textures['bug'][0] );
 			self.sprites['bug'] = sprite;
-			sprite.anchor.set(0.5, 0.5);
+			sprite.anchor.set(0.5, 0.6);
 			sprite.realRotation = 0;
 			sprite.scale.set(0.7, 0.7);
 

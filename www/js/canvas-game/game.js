@@ -1,7 +1,8 @@
 define(function(require) {
 
 	var helper = require('js/canvas-game/helper'),
-		Point = require('js/canvas-game/point');
+		Point = require('js/canvas-game/point'),
+		Map = require('js/canvas-game/map');
 
 	function getDefault(defaultValue, value) {
 		
@@ -60,7 +61,16 @@ define(function(require) {
 	Game.prototype.parseChallengeTry = function parseChallengeTry(data, onComplete) {
 
 		onComplete = helper.getDefault(function() {}, onComplete);
-		var state = State.from2DArray(data.map);
+
+		var array = data.map;
+		if(typeof data.map.squares !== 'undefined') {
+			array = [];
+			for(var i = 0; i < data.map.res.y; ++i) {
+				array.push(data.map.squares.slice(i * data.map.res.x, (i + 1) * data.map.res.x));
+			}
+		}
+
+		var state = State.from2DArray(array);
 		this.setState(state);
 		if(typeof data.details != 'undefined') {
 			this.runChallenge(data.details, onComplete);
