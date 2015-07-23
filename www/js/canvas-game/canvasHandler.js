@@ -4,23 +4,16 @@ define(function(require) {
 		Point = require('js/canvas-game/point');
 
 	var assets = {
-		grounds: 	{ url: '/tiles/grounds.png', sprite: false, center: false },
-		bug: 		{ url: '/tiles/ladybug.png', sprite: true, center: true },
-		tileset: 	{ url: '/tiles/tiles.png', sprite: false, center: false },
-		bottlecap: 	{ url: '/tiles/bottlecap.png', sprite: false, center: false },
-		axe: 		{ url: '/tiles/axe.png', sprite: false, center: false }
+		grounds: 	{ url: '/tiles/grounds.png' },
+		bug: 		{ url: '/tiles/ladybug.png' },
+		tileset: 	{ url: '/tiles/tiles.png' },
+		bottlecap: 	{ url: '/tiles/bottlecap.png' },
+		axe: 		{ url: '/tiles/axe.png' }
 	};
 
 	var textures = {},
-		sprites = {},
 		squareSize = 32,
 		texturesLoaded = false;
-
-	function loadAssets() {
-
-
-
-	}
 
 	function loadTexturesFromTileset() {
 
@@ -75,13 +68,6 @@ define(function(require) {
 
 				for(var key in resources) {
 					textures[key] = resources[key].texture;
-					if(assets[key].sprite) {
-						var sprite = new PIXI.Sprite(resources[key].texture);
-						sprites[key] = sprite;
-						if(assets[key].center) {
-							sprite.anchor.set(0.5, 0.5);
-						}
-					}
 				}
 				loadTexturesFromTileset();
 				texturesLoaded = true;
@@ -103,12 +89,21 @@ define(function(require) {
 		this.animations = [];
 		this.stage = null;
 		this.animationDuration = 200;
+		this.sprites = [];
 
 	}
 
 	canvasHandler.prototype.init = function init(onInitialized) {
 
-		loadTextures(onInitialized);
+		var self = this;
+		loadTextures(function() {
+
+			var sprite = new PIXI.Sprite(textures['bug']);
+			self.sprites['bug'] = sprite;
+			sprite.anchor.set(0.5, 0.5);
+
+			onInitialized();
+		});
 
 	}
 
@@ -122,8 +117,8 @@ define(function(require) {
 	canvasHandler.prototype.setCanvas = function setCanvas(canvas) {
 
 		this.canvas = canvas;
-		if(sprites.ground) {
-			this.renderer = new PIXI.autoDetectRenderer(sprites.ground.width, sprites.ground.height, {view: canvas});
+		if(this.sprites.ground) {
+			this.renderer = new PIXI.autoDetectRenderer(this.sprites.ground.width, this.sprites.ground.height, {view: canvas});
 		}
 		else {
 			this.renderer = new PIXI.autoDetectRenderer(800, 600, {view: canvas});
@@ -143,7 +138,7 @@ define(function(require) {
 
 	canvasHandler.prototype.drawGround = function drawGround() {
 
-		this.stage.removeChild(sprites.ground);
+		this.stage.removeChild(this.sprites.ground);
 
 		var halfSquareSize = squareSize * 0.5;
 		function drawAutotilePart(context, source, autotile, tile, coordinates) {
@@ -176,7 +171,7 @@ define(function(require) {
 
 		var texture = PIXI.Texture.fromCanvas(groundCanvas);
 		var sprite = new PIXI.Sprite(texture);
-		sprites.ground = sprite;
+		this.sprites.ground = sprite;
 		this.stage.addChildAt(sprite, 0);
 
 	}
@@ -244,7 +239,7 @@ define(function(require) {
 
 		this.stage = new PIXI.Container();
 		this.drawGround();
-		this.renderer.resize(sprites.ground.width, sprites.ground.height);
+		this.renderer.resize(this.sprites.ground.width, this.sprites.ground.height);
 
 		// Add special squares on the map
 		this.map = [];
@@ -257,8 +252,8 @@ define(function(require) {
 		}
 
 		// Add the bug
-		this.moveSquareSprite(sprites.bug, state.bug.pos.x, state.bug.pos.y);
-		this.stage.addChild(sprites.bug);
+		this.stage.addChild(this.sprites.bug);
+		this.moveSquareSprite(this.sprites.bug, state.bug.pos.x, state.bug.pos.y);
 
 	}
 
@@ -326,7 +321,7 @@ define(function(require) {
 
 		onComplete = helper.getDefault(function() {}, onComplete);
 
-		var bug = sprites.bug;
+		var bug = this.sprites.bug;
 		this.animation({
 			duration: duration,
 			from: { 

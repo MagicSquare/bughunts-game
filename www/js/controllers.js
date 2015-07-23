@@ -136,17 +136,17 @@ angular.module('starter.controllers', [])
 	$scope.onResChanged = function onResChanged() {
 		map = $scope.challenge.map;
 
-		map = map.slice(Math.min(map.length, $scope.challenge.res.y));
+		map = map.length > $scope.challenge.res.y ? map.slice(0, $scope.challenge.res.y) : map;
 		for(var i = 0; i < $scope.challenge.res.y; ++i) {
 			var line = [];
-			if(map.length < i + 1) {
+			if(map.length <= i ) {
 				map.push(line);
 			}
 			else {
 				line = map[i];
 			}
-			line = line.slice(Math.min(line.length, $scope.challenge.res.x));
-			for(var j = 0; j < $scope.challenge.res.x; ++j) {
+			line = line.length > $scope.challenge.res.y ? line.slice(0, $scope.challenge.res.x) : line;
+			for(var j = line.length; j < $scope.challenge.res.x; ++j) {
 				if(line.length < j + 1) {
 					line.push('o');
 				}
