@@ -5,10 +5,10 @@ define(function(require) {
 
 	var assets = {
 		grounds: 	{ url: '/tiles/grounds.png' },
-		bug: 		{ url: '/tiles/ladybug.png' },
 		tileset: 	{ url: '/tiles/tiles.png' },
 		bottlecap: 	{ url: '/tiles/bottlecap.png' },
-		axe: 		{ url: '/tiles/axe.png' }
+		axe: 		{ url: '/tiles/axe.png' },
+		bug: 		{ url: '/tiles/bug.png' }
 	};
 
 	var textures = {},
@@ -17,21 +17,21 @@ define(function(require) {
 
 	function loadTexturesFromTileset() {
 
-		function loadGroupOfTextures(array, source, coordinates) {
+		function loadGroupOfTextures(array, source, scale, coordinates) {
 			for(var i = 0; i < coordinates.length; ++i) {
 				array.push(helper.extractTextureFromCanvas(
 					source,
-					coordinates[i].x * squareSize,
-					coordinates[i].y * squareSize,
-					squareSize,
-					squareSize
+					coordinates[i].x * squareSize * scale,
+					coordinates[i].y * squareSize * scale,
+					squareSize * scale,
+					squareSize * scale
 				));
 			}
 		}
 
 		var source = textures.tileset.baseTexture.source;
 		textures.stones = [];
-		loadGroupOfTextures(textures.stones, source, [
+		loadGroupOfTextures(textures.stones, source, 1, [
 			{ x: 7, y: 2 },
 			{ x: 4, y: 3 },
 			{ x: 6, y: 3 },
@@ -39,7 +39,7 @@ define(function(require) {
 		]);
 
 		textures.grass = [];
-		loadGroupOfTextures(textures.grass, source, [
+		loadGroupOfTextures(textures.grass, source, 1, [
 			{ x: 2, y: 2 },
 			{ x: 6, y: 4 },
 			{ x: 7, y: 4 },
@@ -47,6 +47,14 @@ define(function(require) {
 		]);
 
 		textures.goal = helper.extractTextureFromCanvas(source, 4 * squareSize, 9 * squareSize, squareSize, squareSize);
+
+		textures.bug = [];
+		loadGroupOfTextures(textures.bug, textures.bug.baseTexture.source, 2, [
+			{ x: 1, y: 0 },
+			{ x: 0, y: 1 },
+			{ x: 0, y: 0 },
+			{ x: 1, y: 1 }
+		]);
 
 	}
 
@@ -88,7 +96,7 @@ define(function(require) {
 		this.state = null;
 		this.animations = [];
 		this.stage = null;
-		this.animationDuration = 200;
+		this.animationDuration = 300;
 		this.sprites = [];
 
 	}
@@ -98,9 +106,12 @@ define(function(require) {
 		var self = this;
 		loadTextures(function() {
 
-			var sprite = new PIXI.Sprite(textures['bug']);
+			self.bugSpriteTexture = 0;
+			var sprite = new PIXI.Sprite(textures['bug'][0] );
 			self.sprites['bug'] = sprite;
 			sprite.anchor.set(0.5, 0.5);
+			sprite.realRotation = 0;
+			sprite.scale.set(0.7, 0.7);
 
 			onInitialized();
 		});
@@ -186,6 +197,34 @@ define(function(require) {
 
 	}
 
+	canvasHandler.prototype.updateTextureWithRotation = function updateTextureWithRotation() {
+
+		var rotation = (this.sprites.bug.realRotation + 2 * Math.PI) % (2 * Math.PI),
+			step = Math.PI / 4;
+
+		var id = 0;
+
+		if(rotation < step) {
+			id = 0;
+		}
+		else if(rotation < 3 * step) {
+			id = 1;
+		}
+		else if(rotation < 5 * step) {
+			id = 2;
+		}
+		else if(rotation < 7 * step) {
+			id = 3;
+		}
+		this.sprites.bug.rotation = this.sprites.bug.realRotation - 2 * id * step;
+
+		if(id != this.bugSpriteTexture) {
+			this.bugSpriteTexture = id;
+			this.sprites.bug.texture = textures.bug[id];
+		}
+
+	}
+
 	canvasHandler.prototype.addSquare = function addSquare(x, y, square) {
 
 		var sprite = null,
@@ -252,6 +291,7 @@ define(function(require) {
 		}
 
 		// Add the bug
+		this.sprites.bug.realRotation = 0;
 		this.stage.addChild(this.sprites.bug);
 		this.moveSquareSprite(this.sprites.bug, state.bug.pos.x, state.bug.pos.y);
 
@@ -321,13 +361,23 @@ define(function(require) {
 
 		onComplete = helper.getDefault(function() {}, onComplete);
 
-		var bug = this.sprites.bug;
+		var bug = this.sprites.bug,
+			self = this,
+			rotationFrom = bug.realRotation;
+
+		if(Math.abs(rotationFrom - rotation) > Math.abs((rotationFrom - Math.PI * 2) - rotation) ) {
+			rotationFrom -= Math.PI * 2;
+		}
+		else if(Math.abs(rotationFrom - rotation) > Math.abs((rotationFrom + Math.PI * 2) - rotation) ) {
+			rotationFrom += Math.PI * 2;
+		}
+
 		this.animation({
 			duration: duration,
 			from: { 
 				x: bug.x,
 				y: bug.y,
-				rotation: bug.rotation
+				rotation: rotationFrom
 			},
 			to: {
 				x: ( pos.x + 0.5 ) * squareSize,
@@ -338,7 +388,8 @@ define(function(require) {
 
 				bug.x = this.x;
 				bug.y = this.y;
-				bug.rotation = this.rotation;
+				bug.realRotation = this.rotation;
+				self.updateTextureWithRotation();
 
 			},
 			onComplete: onComplete
