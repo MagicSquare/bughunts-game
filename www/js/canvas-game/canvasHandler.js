@@ -48,13 +48,14 @@ define(function(require) {
 
 		textures.goal = helper.extractTextureFromCanvas(source, 4 * squareSize, 9 * squareSize, squareSize, squareSize);
 
-		textures.bug = [];
-		loadGroupOfTextures(textures.bug, textures.bug.baseTexture.source, 2, [
+		var bugTextures = [];
+		loadGroupOfTextures(bugTextures, textures.bug.baseTexture.source, 2, [
 			{ x: 1, y: 0 },
 			{ x: 0, y: 1 },
 			{ x: 0, y: 0 },
 			{ x: 1, y: 1 }
 		]);
+		textures.bug = bugTextures;
 
 	}
 
@@ -197,9 +198,10 @@ define(function(require) {
 
 	}
 
-	canvasHandler.prototype.updateTextureWithRotation = function updateTextureWithRotation() {
+	canvasHandler.prototype.setBugRotation = function setBugRotation(realRotation) {
 
-		var rotation = (this.sprites.bug.realRotation + 2 * Math.PI) % (2 * Math.PI),
+		this.sprites.bug.realRotation = realRotation;
+		var rotation = (realRotation + 2 * Math.PI) % (2 * Math.PI),
 			step = Math.PI / 4;
 
 		var id = 0;
@@ -216,7 +218,7 @@ define(function(require) {
 		else if(rotation < 7 * step) {
 			id = 3;
 		}
-		this.sprites.bug.rotation = this.sprites.bug.realRotation - 2 * id * step;
+		this.sprites.bug.rotation = realRotation - 2 * id * step;
 
 		if(id != this.bugSpriteTexture) {
 			this.bugSpriteTexture = id;
@@ -291,7 +293,7 @@ define(function(require) {
 		}
 
 		// Add the bug
-		this.sprites.bug.realRotation = 0;
+		this.setBugRotation(Math.PI * 0.5);
 		this.stage.addChild(this.sprites.bug);
 		this.moveSquareSprite(this.sprites.bug, state.bug.pos.x, state.bug.pos.y);
 
@@ -388,8 +390,7 @@ define(function(require) {
 
 				bug.x = this.x;
 				bug.y = this.y;
-				bug.realRotation = this.rotation;
-				self.updateTextureWithRotation();
+				self.setBugRotation(this.rotation);
 
 			},
 			onComplete: onComplete
