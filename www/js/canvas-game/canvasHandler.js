@@ -12,19 +12,21 @@ define(function(require) {
 	};
 
 	var textures = {},
-		squareSize = 32,
+		squareSize = 50,
+		tilesScale = 0.64,
 		texturesLoaded = false;
 
 	function loadTexturesFromTileset() {
 
+		var resolution = squareSize * tilesScale;
 		function loadGroupOfTextures(array, source, scale, coordinates) {
 			for(var i = 0; i < coordinates.length; ++i) {
 				array.push(helper.extractTextureFromCanvas(
 					source,
-					coordinates[i].x * squareSize * scale,
-					coordinates[i].y * squareSize * scale,
-					squareSize * scale,
-					squareSize * scale
+					coordinates[i].x * resolution * scale,
+					coordinates[i].y * resolution * scale,
+					resolution * scale,
+					resolution * scale
 				));
 			}
 		}
@@ -46,7 +48,7 @@ define(function(require) {
 			{ x: 3, y: 6 }
 		]);
 
-		textures.goal = helper.extractTextureFromCanvas(source, 4 * squareSize, 9 * squareSize, squareSize, squareSize);
+		textures.goal = helper.extractTextureFromCanvas(source, 4 * resolution, 9 * resolution, resolution, resolution);
 
 		var bugTextures = [];
 		loadGroupOfTextures(bugTextures, textures.bug.baseTexture.source, 2, [
@@ -97,7 +99,7 @@ define(function(require) {
 		this.state = null;
 		this.animations = [];
 		this.stage = null;
-		this.animationDuration = 300;
+		this.animationDuration = 2000;
 		this.sprites = [];
 
 	}
@@ -112,7 +114,7 @@ define(function(require) {
 			self.sprites['bug'] = sprite;
 			sprite.anchor.set(0.5, 0.6);
 			sprite.realRotation = 0;
-			sprite.scale.set(0.7, 0.7);
+			sprite.scale.set(0.6 / tilesScale, 0.6 / tilesScale);
 
 			onInitialized();
 		});
@@ -134,8 +136,8 @@ define(function(require) {
 		}
 		else {
 			this.renderer = new PIXI.autoDetectRenderer(800, 600, {view: canvas});
-
 		}
+		this.renderer.plugins.interaction.destroy()
 
 	}
 
@@ -150,9 +152,10 @@ define(function(require) {
 
 	canvasHandler.prototype.drawGround = function drawGround() {
 
+		var resolution = squareSize * tilesScale;
 		this.stage.removeChild(this.sprites.ground);
 
-		var halfSquareSize = squareSize * 0.5;
+		var halfSquareSize = resolution * 0.5;
 		function drawAutotilePart(context, source, autotile, tile, coordinates) {
 			var top = (autotile.y * 6 + tile.y) * halfSquareSize,
 				left = (autotile.x * 4 + tile.x) * halfSquareSize;
@@ -160,8 +163,8 @@ define(function(require) {
 			context.drawImage(source, left, top, halfSquareSize, halfSquareSize, coordinates.x, coordinates.y, halfSquareSize, halfSquareSize);
 		}
 		var groundCanvas = document.createElement('canvas');
-		groundCanvas.width = this.state.res.x * squareSize;
-		groundCanvas.height = this.state.res.y * squareSize;
+		groundCanvas.width = this.state.res.x * resolution;
+		groundCanvas.height = this.state.res.y * resolution;
 		var context = groundCanvas.getContext('2d');
 
   
@@ -183,6 +186,7 @@ define(function(require) {
 
 		var texture = PIXI.Texture.fromCanvas(groundCanvas);
 		var sprite = new PIXI.Sprite(texture);
+		sprite.scale.set(1 / tilesScale, 1 / tilesScale);
 		this.sprites.ground = sprite;
 		this.stage.addChildAt(sprite, 0);
 
@@ -253,6 +257,7 @@ define(function(require) {
 
 		if(texture !== null) {
 			sprite = new PIXI.Sprite(texture);
+			sprite.scale.set(1 / tilesScale, 1 / tilesScale);
 			sprite.anchor.set(0.5, 0.5);
 			sprite.alpha = alpha;
 			this.stage.addChild(sprite);
@@ -289,6 +294,7 @@ define(function(require) {
 
 				var square = state.get({x: j, y: i});
 				this.map.push(this.addSquare(j, i, square));
+
 			}
 		}
 
