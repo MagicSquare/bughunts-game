@@ -7,7 +7,8 @@
     "javascript-detect-element-resize": "latest",
     "pixi": "https://github.com/GoodBoyDigital/pixi.js.git",
     "tweenjs": "https://github.com/tweenjs/tween.js.git",
-    "requirejs": "latest"
+    "requirejs": "latest",
+    "angular-material": "latest"
   },
   "devDependencies": {
     "ionic": "driftyco/ionic-bower#1.0.1"

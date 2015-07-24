@@ -1,57 +1,82 @@
 <ion-view view-title="La chasse aux bugs">
     <ion-content class="padding">
-        <div class="row responsive-sm">
-            <div class="col">
-                <canvas bughunts style="width: 100%"></canvas>
-                <!--<img ng-src="{{ gameImage }}" alt="Game" style="width:100%"/>-->
-            </div>
-            <div class="col col-33" style="max-width: 200px; margin: auto;">
-                <div class="card" style="margin-top: 0px;">
-                    <div class="row">
-                        <div class="col" ng-repeat="tommette in tommettes" style="margin-bottom: 0px; padding: 2px;">
-                            <img ng-src="{{ getTommetteUrl(tommette) }}" alt="{{ tommette }}"
-                                 ng-click="handleTommette(tommette)" style="width:100%"/>
+        <div layout="row">
+            <div flex offset-lg="10" flex-lg="80" offset-gt-lg="20" flex-gt-lg="60">
+
+                <div layout-gt-sm="row" mayout-sm="column">
+
+                    <div flex flex-gt-sm="67">
+                        <canvas bughunts style="width: 100%"></canvas>
+                        <!--<img ng-src="{{ gameImage }}" alt="Game" style="width:100%"/>-->
+                    </div>
+
+                    <div flex flex-gt-sm="33" layout="row">
+                        <div offset-sm="20" flex-sm="60">
+
+                            <md-card flex >
+                                <md-card-content layout="row">
+                                    <div flex ng-repeat="tommette in tommettes">
+                                        <md-button class="md-icon-button" aria-label="{{ tommette }}" ng-click="handleTommette(tommette)">
+                                            <img ng-src="{{ getTommetteUrl(tommette) }}" alt="{{ tommette }}" style="width:100%"/>
+                                        </md-button>
+                                    </div>
+                                </md-card-content>
+                            </md-card>
+
+                            <md-card>
+                                <md-card-content>
+                                    <div gridster="gridsterOpts">
+                                        <ul>
+                                            <li gridster-item="item.gridster" ng-repeat="item in tablet">
+                                                <img ng-src="{{ getTommetteUrl(item.icon) }}" alt="{{ item.icon }}" style="width:100%"/>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </md-card-content>
+                            </md-card>
+
+                            <div>
+                                <md-button aria-label="Play" class="md-fab md-primary icon ion-play" ng-click="run()"></md-button>
+                            </div>
+
                         </div>
                     </div>
-                </div>
-                <div class="card">
-                    <div gridster="gridsterOpts">
-                        <ul>
-                            <li gridster-item="item.gridster" ng-repeat="item in tablet">
-                                <img ng-src="{{ getTommetteUrl(item.icon) }}" alt="{{ item.icon }}" style="width:100%"/>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-                <div>
-                    <button class="button button-dark icon ion-play" ng-click="run()"></button>
-                </div>
-            </div>
-        </div>
-        <div ng-if="result" class="row">
-            <div class="col">
-                <div class="card">
-                    <p ng-class="{balanced: result.win}">
-                        {{ result.message }}
-                    </p>
-                    <button class="button button-dark icon ion-share" ng-click="shareScore()"></button>
-                </div>
-            </div>
-        </div>
 
-        <div class="row">
-            <a href="http://fr.ulule.com/chasseauxbugs" target="_blank" style="margin: auto;">
-                Aidez nous en participant à la collecte <img border="0" alt="Ulule" src="img/ulule.png" width="50" height="50">
-            </a>
-        </div>
-        <div class="row">
-            <div id="fb-like" class="col fb-page" data-href="https://www.facebook.com/LaChasseAuxBugs"
-                 data-small-header="false" data-adapt-container-width="true" data-hide-cover="false"
-                 data-show-facepile="false" data-show-posts="false">
-                <div class="fb-xfbml-parse-ignore">
-                    <blockquote cite="https://www.facebook.com/LaChasseAuxBugs"><a
-                            href="https://www.facebook.com/LaChasseAuxBugs">La Chasse Aux Bugs</a></blockquote>
                 </div>
+
+                <md-card ng-if="result">
+                    <md-card-content>
+                        <div layout="row">
+                            <md-button class="md-fab md-primary icon ion-share" aria-label="Share" ng-click="shareScore()"></md-button>
+                            <div flex>
+                                <h2 class="md-title">Score</h2>
+                                <p ng-class="{balanced: result.win}">
+                                    {{ result.message }}
+                                </p>
+                            </div>
+                        </div>
+                    </md-card-content>
+                </md-card>
+
+                <md-card ng-if="result">
+                    <md-card-content>
+                        <div layout="row" layout-align="space-around center">
+                            <div id="fb-like" class="col fb-page" data-href="https://www.facebook.com/LaChasseAuxBugs"
+                                 data-small-header="true" data-hide-cover="false" data-adapt-container-width="true"
+                                 data-show-facepile="false" data-show-posts="false">
+                                <div class="fb-xfbml-parse-ignore">
+                                    <blockquote cite="https://www.facebook.com/LaChasseAuxBugs"><a
+                                            href="https://www.facebook.com/LaChasseAuxBugs">La Chasse Aux Bugs</a></blockquote>
+                                </div>
+                            </div>
+                            <a href="http://fr.ulule.com/chasseauxbugs" target="_blank" style="margin: auto;">
+                                <md-button aria-label="Ulule" class="md-raised">Aidez nous en participant à la collecte</md-button><!--
+                                --><img border="0" alt="Ulule" src="img/ulule.png" width="50" height="50">
+                            </a>
+                        </div>
+                    </md-card-content>
+                </md-card>
+
             </div>
         </div>
 

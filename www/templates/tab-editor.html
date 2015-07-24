@@ -1,24 +1,43 @@
 <ion-view view-title="La chasse aux bugs">
     <ion-content class="padding">
-        <div class="row">
-            <div class="col">
-                <canvas bughuntseditor style="width: 100%"></canvas>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col">
-                <div class="list">
-                    <div class="item item-input">
-                        X:<input type="number" placeholder="X" ng-change="onResChanged()" ng-model="challenge.res.x"/>; 
-                        Y:<input type="number" placeholder="Y" ng-change="onResChanged()" ng-model="challenge.res.y"/>
-                    </div>
-                    <div class="item item-input" ng-repeat="i in getNumber(challenge.res.y) track by $index">
-                        <span ng-repeat="j in getNumber(challenge.res.x) track by $index">
-                            <input type="text" ng-change="onStateChanged()" ng-model="challenge.map[i][j]" value='o'/> 
-                        </span>
-                    </div>
-                    <pre style="white-space: pre-wrap;" class="item">challenge = {{challenge | json}}</pre>
-                </div>
+        <div layout="row">
+            <div flex offset-lg="10" flex-lg="80" offset-gt-lg="20" flex-gt-lg="60">
+
+                <h1 class="md-display-1">Level editor</h1>
+
+                <md-content class="md-padding">
+                    <md-tabs md-dynamic-height md-border-bottom>
+
+                        <md-tab label="view">
+                            <md-content class="md-padding">
+                                <canvas bughuntseditor style="width: 100%"></canvas>
+                            </md-content>
+                        </md-tab>
+
+                        <md-tab label="config">
+                            <md-content class="md-padding">
+                                <div class="list">
+                                    <div class="item item-input">
+                                        X:<input type="number" placeholder="X" ng-change="onResChanged()" ng-model="challenge.res.x"/>; 
+                                        Y:<input type="number" placeholder="Y" ng-change="onResChanged()" ng-model="challenge.res.y"/>
+                                    </div>
+                                    <div class="item item-input" ng-repeat="i in getNumber(challenge.res.y) track by $index">
+                                        <span ng-repeat="j in getNumber(challenge.res.x) track by $index">
+                                            <input type="text" ng-change="onStateChanged()" ng-model="challenge.map[i][j]" value='o'/> 
+                                        </span>
+                                    </div>
+                                </div>
+                            </md-content>
+                        </md-tab>
+
+                        <md-tab label="json">
+                            <md-content class="md-padding">
+                                <pre style="white-space: pre-wrap;" class="item">challenge = {{challenge | json}}</pre>
+                            </md-content>
+                        </md-tab>
+
+                    </md-tabs>
+                </md-content>
             </div>
         </div>
 

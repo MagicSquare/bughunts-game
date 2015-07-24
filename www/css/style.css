@@ -5,11 +5,6 @@
 	border-radius: 5px;*/
 }
 
-ion-content {
-	max-width: 640px;
-	margin: auto;
-}
-
-#fb-like{
-    text-align: center;
+button.icon {
+	font-size: 25px !important;
 }
