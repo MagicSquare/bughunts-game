@@ -33,6 +33,7 @@ angular.module('starter.controllers', [])
                     if(Canvas.isReady) {
                         Canvas.game.parseChallengeTry(data, function() {
                             $scope.result = data;
+                            $scope.$apply();
                         });
                     }
                     else {
