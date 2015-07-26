@@ -38,12 +38,12 @@ angular.module('starter', ['ionic', 'ngMaterial', 'starter.controllers', 'starte
 
   // Each tab has its own nav history stack:
 
-  .state('tab.game', {
-    url: '/game',
+  .state('tab.challenge', {
+    url: '/challenge/:challenge',
     views: {
       'tab-game': {
         templateUrl: 'templates/tab-game.html',
-        controller: 'GameCtrl'
+        controller: 'ChallengeCtrl'
       }
     }
   })
@@ -69,6 +69,6 @@ angular.module('starter', ['ionic', 'ngMaterial', 'starter.controllers', 'starte
   });
 
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/tab/game');
+  $urlRouterProvider.otherwise('/tab/challenge/0x0001');
 
 });

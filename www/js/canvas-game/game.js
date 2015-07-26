@@ -58,20 +58,26 @@ define(function(require) {
 
 	}
 
+    Game.prototype.initChallenge = function (data) {
+
+        var array = data.map;
+        if(typeof data.map.squares !== 'undefined') {
+            array = [];
+            for(var i = 0; i < data.map.res.y; ++i) {
+                array.push(data.map.squares.slice(i * data.map.res.x, (i + 1) * data.map.res.x));
+            }
+        }
+
+        var state = State.from2DArray(array);
+        this.setState(state);
+    }
+
 	Game.prototype.parseChallengeTry = function parseChallengeTry(data, onComplete) {
 
 		onComplete = helper.getDefault(function() {}, onComplete);
 
-		var array = data.map;
-		if(typeof data.map.squares !== 'undefined') {
-			array = [];
-			for(var i = 0; i < data.map.res.y; ++i) {
-				array.push(data.map.squares.slice(i * data.map.res.x, (i + 1) * data.map.res.x));
-			}
-		}
+        this.initChallenge(data);
 
-		var state = State.from2DArray(array);
-		this.setState(state);
 		if(typeof data.details != 'undefined') {
 			this.runChallenge(data.details, onComplete);
 		}
