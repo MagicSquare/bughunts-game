@@ -20,7 +20,7 @@ define(function(require) {
 
 	}
 
-	Game.prototype.init = function load(onInitialized) {
+	Game.prototype.init = function(onInitialized) {
 
 		var self = this;
 		this.canvasHandler.init(function() {
@@ -31,7 +31,7 @@ define(function(require) {
 
 	}
 
-	Game.prototype.start = function start() {
+	Game.prototype.start = function() {
 
 	 	var time = new Date().getTime();
 	 	var self = this;
@@ -51,14 +51,15 @@ define(function(require) {
 
 	}
 
-	Game.prototype.setState = function setState(state) {
+	Game.prototype.setState = function(state, actors) {
 
 		this.initialState = state;
-		this.canvasHandler.setState(state.clone());
+        this.actors = actors;
+		this.canvasHandler.setState(state.clone(), actors);
 
 	}
 
-    Game.prototype.initChallenge = function (data) {
+    Game.prototype.initChallenge = function(data) {
 
         var array = data.map;
         if(typeof data.map.squares !== 'undefined') {
@@ -69,10 +70,10 @@ define(function(require) {
         }
 
         var state = State.from2DArray(array);
-        this.setState(state);
+        this.setState(state, data.map.actors);
     }
 
-	Game.prototype.parseChallengeTry = function parseChallengeTry(data, onComplete) {
+	Game.prototype.parseChallengeTry = function(data, onComplete) {
 
 		onComplete = helper.getDefault(function() {}, onComplete);
 
@@ -87,7 +88,7 @@ define(function(require) {
 
 	}
 
-	Game.prototype.runChallenge = function runChallenge(steps, onChallengeComplete) {
+	Game.prototype.runChallenge = function(steps, onChallengeComplete) {
 
 		onChallengeComplete = helper.getDefault(function() {}, onChallengeComplete);
 		// Copy the initial map
@@ -109,7 +110,7 @@ define(function(require) {
 
 	}
 
-	Game.prototype.runStep = function runStep(step, onComplete) {
+	Game.prototype.runStep = function(step, onComplete) {
 
 		var firstCall = true,
 			StR = helper.stringToRotation;
