@@ -99,7 +99,7 @@ define(function(require) {
 		this.state = null;
 		this.animations = [];
 		this.stage = null;
-		this.animationDuration = 2000;
+		this.animationDuration = 500;
 		this.sprites = [];
 
 	}
@@ -123,8 +123,8 @@ define(function(require) {
 
 	canvasHandler.prototype.moveSquareSprite = function moveSquareSprite(sprite, x, y) {
 
-		sprite.x = ( x + 0.5 ) * squareSize;
-		sprite.y = ( y + 0.5 ) * squareSize;
+		sprite.x = ( x + 1 ) * squareSize;
+		sprite.y = ( y + 1 ) * squareSize;
 
 	}
 
@@ -154,6 +154,8 @@ define(function(require) {
 
 		var resolution = squareSize * tilesScale;
 		this.stage.removeChild(this.sprites.ground);
+		var resX = this.state.res.x + 1,
+			resY = this.state.res.y + 1;
 
 		var halfSquareSize = resolution * 0.5;
 		function drawAutotilePart(context, source, autotile, tile, coordinates) {
@@ -163,14 +165,14 @@ define(function(require) {
 			context.drawImage(source, left, top, halfSquareSize, halfSquareSize, coordinates.x, coordinates.y, halfSquareSize, halfSquareSize);
 		}
 		var groundCanvas = document.createElement('canvas');
-		groundCanvas.width = this.state.res.x * resolution;
-		groundCanvas.height = this.state.res.y * resolution;
+		groundCanvas.width = resX * resolution;
+		groundCanvas.height = resY * resolution;
 		var context = groundCanvas.getContext('2d');
 
   
 		// Draw the ground
-		var maxX = this.state.res.x * 2,
-			maxY = this.state.res.y * 2,
+		var maxX = resX * 2,
+			maxY = resY * 2,
 			tile = {x: 0, y:0};
 		for(var x = 0; x < maxX; ++x) {
 

@@ -2,7 +2,7 @@ angular.module('starter.controllers', [])
 
 .controller('GameCtrl', function($scope, $http, Settings, Canvas) {
 
-	var tabletSize = 4;
+	var tabletSize = 5;
 
 	$scope.tablet = [];
 	$scope.tommettes = ['left', 'forward', 'right', 'back', 'remove'];
