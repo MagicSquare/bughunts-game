@@ -112,30 +112,29 @@ define(function(require) {
 
 	Game.prototype.runStep = function(step, onComplete) {
 
-		var firstCall = true,
-			StR = helper.stringToRotation;
-		function getOnComplete(longestAnimation, i, animation) {
-			if(firstCall && longestAnimation === i && animation.type != 'del') {
-				firstCall = false;
-				return onComplete;
-			}
-			return function() {};
-		}
+		var StR = helper.stringToRotation;
 
-		var longestDuration = 0,
+		var longestDuration = helper.getDefault(1, step[0].duration),
 			longestAnimation = 0;
 		for(var i = 0; i < step.length; ++i) {
 			var duration = helper.getDefault(1, step[i].duration);
-			if(duration > longestDuration) {
+			if(duration > longestDuration && animation.type != 'del') {
 				longestDuration = duration;
 				longestAnimation = i;
 			}
 		}
 
+        function getOnComplete(longestAnimation, i) {
+            if(longestAnimation === i) {
+                return onComplete;
+            }
+            return function() {};
+        }
+
 		for(var i = 0; i < step.length; ++i) {
 			var animation = step[i],
 				duration = helper.getDefault(1, animation.duration),
-				completeCallback = getOnComplete(longestAnimation, i, animation);
+                completeCallback = getOnComplete(longestAnimation, i);
 
 			switch(animation.type) {
 				case 'bug':
@@ -152,12 +151,10 @@ define(function(require) {
 					this.canvasHandler.spriteAnimation(duration, animation.name, animation.posFrom, StR(animation.rotationFrom), animation.posTo, StR(animation.rotationTo), completeCallback);
 					break;
 				case 'del':
-					this.canvasHandler.removeSquare(animation.pos.x, animation.pos.y);
+					this.canvasHandler.removeSquare(animation.pos.x, animation.pos.y, completeCallback);
 					break;
 			}
 		}
-
-
 	}
 
 	function State(res) {
