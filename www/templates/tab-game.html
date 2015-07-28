@@ -14,11 +14,11 @@
                     <div flex flex-gt-sm="33" layout="row">
                         <div offset-sm="20" flex-sm="60">
 
-                            <md-card flex >
-                                <md-card-content layout="row">
-                                    <div flex ng-repeat="tommette in tommettes">
-                                        <md-button class="md-icon-button" aria-label="{{ tommette }}" ng-click="handleTommette(tommette)">
-                                            <img ng-src="{{ getTommetteUrl(tommette) }}" alt="{{ tommette }}" style="width:100%"/>
+                            <md-card flex class="available-tomettes">
+                                <md-card-content layout="row" layout-wrap>
+                                    <div flex="20" ng-repeat="tomette in tomettes">
+                                        <md-button class="md-icon-button" aria-label="{{ tommette }}" ng-click="handleTomette(tomette)">
+                                            <img ng-src="{{ getTometteUrl(tomette) }}" alt="{{ tomette }}"/>
                                         </md-button>
                                     </div>
                                 </md-card-content>
@@ -29,7 +29,7 @@
                                     <div gridster="gridsterOpts">
                                         <ul>
                                             <li gridster-item="item.gridster" ng-repeat="item in tablet">
-                                                <img ng-src="{{ getTommetteUrl(item.icon) }}" alt="{{ item.icon }}" style="width:100%"/>
+                                                <img ng-src="{{ getTometteUrl(item.icon) }}" alt="{{ item.icon }}" style="width:100%"/>
                                             </li>
                                         </ul>
                                     </div>

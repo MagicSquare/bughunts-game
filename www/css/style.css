@@ -8,3 +8,9 @@
 button.icon {
 	font-size: 25px !important;
 }
+
+.available-tomettes img, .available-tomettes button {
+	width: 100%;
+	margin: 0px;
+	height: 100%;	
+}
