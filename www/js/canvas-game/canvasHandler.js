@@ -84,9 +84,6 @@ define(function(require) {
                 loader.add(key, 'img/assets/' + assets[key].url);
             }
 
-            loader.once('complete', onComplete);
-            loader.load();
-
             function onComplete(loader, resources) {
 
                 for(var key in resources) {
@@ -97,6 +94,9 @@ define(function(require) {
                 onInitialized();
 
             }
+
+            loader.once('complete', onComplete);
+            loader.load();
 
         }
         else {
