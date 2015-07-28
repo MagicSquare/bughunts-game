@@ -6,7 +6,7 @@ angular.module('starter.controllers', [])
         $scope.challenge = $stateParams.challenge;
 
         $scope.tablet = [];
-        $scope.tommettes = ['left', 'forward', 'right', 'back', 'remove'];
+        $scope.tommettes = ['left', 'forward', 'right', 'back', 'repeat_2', 'repeat_3', 'repeat_4', 'repeat_5', 'remove'];
         $scope.tommettesCmd = {'left': 'LE', 'forward': 'FO', 'right': 'RI', 'back': 'BA'};
         //$scope.gameImage = 'https://placeholdit.imgix.net/~text?txtsize=23&txt=Chargement...&w=300&h=300';
         $scope.getTommetteUrl = function getTommetteUrl(tommette) {
@@ -20,7 +20,20 @@ angular.module('starter.controllers', [])
         $scope.run = function run() {
             var commands = [];
             for(var i = 0; i < $scope.tablet.length; ++i) {
-                commands.push($scope.tommettesCmd[$scope.tablet[i].icon]);
+                var instruction = $scope.tablet[i].icon;
+                var currentCommand = '';
+                if (instruction.indexOf('repeat_') != -1) {
+                    var nbOfRepeat = instruction.split('_')[1];
+                    var previousInstruction = commands.pop();
+                    if (previousInstruction === undefined) {
+                        console.log('Error: repeat is misused');
+                    } else {
+                        currentCommand = '(' + previousInstruction + ')' + nbOfRepeat;
+                    }
+                } else {
+                    currentCommand = $scope.tommettesCmd[instruction];
+                }
+                commands.push(currentCommand);
             }
             var command = commands.join(' ');
             var url = Settings.host + '/challenge/'+$scope.challenge+'/command/' + command + '?callback=JSON_CALLBACK';
