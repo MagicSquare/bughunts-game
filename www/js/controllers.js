@@ -1,11 +1,19 @@
 angular.module('starter.controllers', [])
 
-    .controller('ChallengeCtrl', function($scope, $stateParams, $state, $http, Settings, Canvas) {
+    .controller('ChallengeCtrl', function($scope, $stateParams, $state, $http, Settings, Canvas, $timeout) {
 
-        var tabletSize = 5;
         $scope.challenge = $stateParams.challenge;
 
-        $scope.tablet = [];
+        $scope.tablet = {
+            items: [],
+            colSize: 5,
+            rowSize: 5
+        };
+        $scope.tabletFunction = {
+            items: [],
+            colSize: 5,
+            rowSize: 1
+        };
         $scope.tomettes = ['left', 'forward', 'right', 'back', 'repeat_2', 'repeat_3', 'repeat_4', 'repeat_5', 'remove'];
         $scope.tomettesCmd = {'left': 'LE', 'forward': 'FO', 'right': 'RI', 'back': 'BA'};
         //$scope.gameImage = 'https://placeholdit.imgix.net/~text?txtsize=23&txt=Chargement...&w=300&h=300';
@@ -14,13 +22,14 @@ angular.module('starter.controllers', [])
         };
 
         $scope.clear = function clear() {
-            $scope.tablet = [];
+            $scope.tablet.items = [];
+            $scope.tabletFunction.items = [];
         };
 
         $scope.run = function run() {
             var commands = [];
-            for(var i = 0; i < $scope.tablet.length; ++i) {
-                var instruction = $scope.tablet[i].icon;
+            for(var i = 0; i < $scope.tablet.items.length; ++i) {
+                var instruction = $scope.tablet.items[i].icon;
                 var currentCommand = '';
                 if (instruction.indexOf('repeat_') != -1) {
                     var nbOfRepeat = instruction.split('_')[1];
@@ -68,23 +77,39 @@ angular.module('starter.controllers', [])
             }, function(response){});
         };
 
-        $scope.handleTomette = function handleTomette(icon) {
+        var tometteRemoved, removeTimeout;
+        $scope.handleTometteDown = function(icon) {
+            tometteRemoved = false;
+            removeTimeout = $timeout(function() {
+                tometteRemoved = true;
+                handleTomette($scope.tabletFunction, icon);
+            }, 250);
+        };
+
+        $scope.handleTometteUp = function(icon) {
+            $timeout.cancel(removeTimeout);
+            if (!tometteRemoved) {
+                handleTomette($scope.tablet, icon);
+            }
+        };
+
+        function handleTomette(tablet, icon) {
             if('remove' === icon) {
-                $scope.tablet.pop();
+                tablet.items.pop();
             }
             else {
-                var id = 0, length = $scope.tablet.length;
+                var id = 0, length = tablet.items.length;
                 if(length > 0) {
-                    var prevTomette = $scope.tablet[length-1];
-                    id = prevTomette.gridster.row * tabletSize + prevTomette.gridster.col + 1;
+                    var prevtomette = tablet.items[length-1];
+                    id = prevtomette.gridster.row * tablet.colSize + prevtomette.gridster.col + 1;
                 }
-                if(id < tabletSize * tabletSize) {
-                    $scope.tablet.push({
+                if(id < tablet.colSize * tablet.rowSize) {
+                    tablet.items.push({
                         gridster: {
                             sizeX: 1,
                             sizeY: 1,
-                            row: Math.floor(id / tabletSize),
-                            col: id % tabletSize
+                            row: Math.floor(id / tablet.rowSize),
+                            col: id % tablet.colSize
                         },
                         icon: icon
                     });
@@ -106,12 +131,14 @@ angular.module('starter.controllers', [])
                 .error(function(data, status) {
                     console.log('Loading command result: Error ' + status);
                 });
+            /*
+             $scope.handletomette('forward');
+             $scope.run();
+             */
+        };
 
-        }
-
-        function orderTomettes() {
-
-            $scope.tablet.sort(function(a, b) {
+        function ordertomettes(tablet) {
+            tablet.items.sort(function(a, b) {
                 if(a.gridster.row != b.gridster.row)
                     return a.gridster.row - b.gridster.row;
                 return a.gridster.col - b.gridster.col;
@@ -120,10 +147,10 @@ angular.module('starter.controllers', [])
         }
 
         $scope.gridsterOpts = {
-            columns: tabletSize,
-            minColumns: tabletSize,
-            minRows: tabletSize,
-            maxRows: tabletSize,
+            columns: $scope.tablet.colSize,
+            minColumns: $scope.tablet.colSize,
+            minRows: $scope.tablet.rowSize,
+            maxRows: $scope.tablet.rowSize,
             pushing: true,
             floating: false,
             swapping: true,
@@ -135,7 +162,27 @@ angular.module('starter.controllers', [])
             },
             draggable: {
                 enabled: true,
-                stop: orderTomettes
+                stop: function(event, $element, widget) { ordertomettes($scope.tablet); }
+            }
+        };
+
+        $scope.gridsterOptsFunction = {
+            columns: $scope.tabletFunction.colSize,
+            minColumns: $scope.tabletFunction.colSize,
+            minRows: $scope.tabletFunction.rowSize,
+            maxRows: $scope.tabletFunction.rowSize,
+            pushing: true,
+            floating: false,
+            swapping: true,
+            margins: [5, 5],
+            outerMargin: true,
+            mobileModeEnabled: false,
+            resizable: {
+                enabled: false
+            },
+            draggable: {
+                enabled: true,
+                stop: function(event, $element, widget) { ordertomettes($scope.tabletFunction); }
             }
         };
     })

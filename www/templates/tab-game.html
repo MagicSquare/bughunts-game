@@ -17,7 +17,9 @@
                             <md-card flex class="available-tomettes">
                                 <md-card-content layout="row" layout-wrap>
                                     <div flex="20" ng-repeat="tomette in tomettes">
-                                        <md-button class="md-icon-button" aria-label="{{ tommette }}" ng-click="handleTomette(tomette)">
+                                        <md-button class="md-icon-button" aria-label="{{ tomette }}"
+                                                   ng-mousedown="handleTometteDown(tomette)"
+                                                   ng-mouseup="handleTometteUp(tomette)">
                                             <img ng-src="{{ getTometteUrl(tomette) }}" alt="{{ tomette }}"/>
                                         </md-button>
                                     </div>
@@ -28,7 +30,19 @@
                                 <md-card-content>
                                     <div gridster="gridsterOpts">
                                         <ul>
-                                            <li gridster-item="item.gridster" ng-repeat="item in tablet">
+                                            <li gridster-item="item.gridster" ng-repeat="item in tablet.items">
+                                                <img ng-src="{{ getTometteUrl(item.icon) }}" alt="{{ item.icon }}" style="width:100%"/>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </md-card-content>
+                            </md-card>
+
+                            <md-card>
+                                <md-card-content>
+                                    <div gridster="gridsterOptsFunction">
+                                        <ul>
+                                            <li gridster-item="item.gridster" ng-repeat="item in tabletFunction.items">
                                                 <img ng-src="{{ getTometteUrl(item.icon) }}" alt="{{ item.icon }}" style="width:100%"/>
                                             </li>
                                         </ul>
