@@ -2,19 +2,31 @@ angular.module('starter.controllers', [])
 
     .controller('ChallengeCtrl', function($scope, $stateParams, $state, $http, Settings, Canvas, $timeout) {
 
+        var tometteFunction = {
+            gridster: {
+                sizeX: 1,
+                sizeY: 1,
+                row: 0,
+                col: 0
+            },
+            icon: 'function'
+        };
         $scope.challenge = $stateParams.challenge;
 
         $scope.tablet = {
             items: [],
             colSize: 5,
-            rowSize: 5
+            rowSize: 5,
+            firstCol: 0
         };
         $scope.tabletFunction = {
+            tometteFunction: tometteFunction,
             items: [],
             colSize: 5,
-            rowSize: 1
+            rowSize: 1,
+            firstCol: 1
         };
-        $scope.tomettes = ['left', 'forward', 'right', 'back', 'repeat_2', 'repeat_3', 'repeat_4', 'repeat_5', 'remove'];
+        $scope.tomettes = ['left', 'forward', 'right', 'back', 'repeat_2', 'repeat_3', 'repeat_4', 'repeat_5', 'function', 'remove'];
         $scope.tomettesCmd = {'left': 'LE', 'forward': 'FO', 'right': 'RI', 'back': 'BA'};
         //$scope.gameImage = 'https://placeholdit.imgix.net/~text?txtsize=23&txt=Chargement...&w=300&h=300';
         $scope.getTometteUrl = function getTometteUrl(tomette) {
@@ -98,7 +110,7 @@ angular.module('starter.controllers', [])
                 tablet.items.pop();
             }
             else {
-                var id = 0, length = tablet.items.length;
+                var id = tablet.firstCol, length = tablet.items.length;
                 if(length > 0) {
                     var prevtomette = tablet.items[length-1];
                     id = prevtomette.gridster.row * tablet.colSize + prevtomette.gridster.col + 1;
@@ -115,10 +127,9 @@ angular.module('starter.controllers', [])
                     });
                 }
             }
-        };
+        }
 
         Canvas.ready = function() {
-
             var url = Settings.host + '/challenge/'+$scope.challenge+ '?callback=JSON_CALLBACK';
             $http.jsonp(url)
                 .success(function(data) {
@@ -131,10 +142,6 @@ angular.module('starter.controllers', [])
                 .error(function(data, status) {
                     console.log('Loading command result: Error ' + status);
                 });
-            /*
-             $scope.handletomette('forward');
-             $scope.run();
-             */
         };
 
         function ordertomettes(tablet) {
@@ -233,7 +240,6 @@ angular.module('starter.controllers', [])
         $scope.onResChanged();
 
         LevelEditor.ready = function() {
-
             $scope.onStateChanged = function onStateChanged() {
                 LevelEditor.game.parseChallengeTry($scope.challenge);
             };
@@ -244,14 +250,10 @@ angular.module('starter.controllers', [])
     })
 
     .directive('bughunts', function(Canvas) {
-
         function link(scope, element) {
-
             Canvas.domCanvas = element[0];
             Canvas.load();
-
         }
-
         return {
             restrict: 'A',
             link: link
@@ -259,14 +261,10 @@ angular.module('starter.controllers', [])
     })
 
     .directive('bughuntseditor', function(LevelEditor) {
-
         function link(scope, element) {
-
             LevelEditor.domCanvas = element[0];
             LevelEditor.load();
-
         }
-
         return {
             restrict: 'A',
             link: link

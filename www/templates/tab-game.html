@@ -37,11 +37,13 @@
                                     </div>
                                 </md-card-content>
                             </md-card>
-
                             <md-card>
                                 <md-card-content>
                                     <div gridster="gridsterOptsFunction">
                                         <ul>
+                                            <li gridster-item="tabletFunction.tometteFunction.gridster">
+                                                <img ng-src="{{ getTometteUrl(tabletFunction.tometteFunction.icon) }}" alt="{{ tabletFunction.tometteFunction.icon }}" style="width:100%"/>
+                                            </li>
                                             <li gridster-item="item.gridster" ng-repeat="item in tabletFunction.items">
                                                 <img ng-src="{{ getTometteUrl(item.icon) }}" alt="{{ item.icon }}" style="width:100%"/>
                                             </li>
