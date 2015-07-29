@@ -325,14 +325,16 @@ define(function(require) {
 
     }
 
-    canvasHandler.prototype.removeSquare = function removeElement(x, y) {
+    canvasHandler.prototype.removeSquare = function removeElement(x, y, onComplete) {
+
+        onComplete = helper.getDefault(function() {}, onComplete);
 
         var index = y * this.state.res.x + x;
         if(index < this.map.length && this.map[index] != null) {
             this.stage.removeChild(this.map[index]);
             this.map[index] = null;
         }
-
+        onComplete();
     }
 
     canvasHandler.prototype.setState = function setState(state, actors) {
@@ -373,6 +375,7 @@ define(function(require) {
 
     canvasHandler.prototype.spriteAnimation = function spriteAnimation(duration, spriteId, posFrom, rotationFrom, posTo, rotationTo, onComplete) {
 
+        onComplete = helper.getDefault(function() {}, onComplete);
         var texture = null;
         switch(spriteId) {
             case 'missile':
