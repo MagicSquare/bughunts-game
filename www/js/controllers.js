@@ -52,7 +52,7 @@ angular.module('starter.controllers', [])
                         currentCommand = '(' + previousCommand + ')' + nbOfRepeat;
                     }
                 } else if (instruction.indexOf('function') != -1) {
-                    currentCommand = '(F)';
+                    currentCommand = 'F';
                     var functionCommand = 'F[';
                     for (var j = 0; j < $scope.tabletFunction.items.length; ++j) {
                         functionCommand += $scope.tomettesCmd[$scope.tabletFunction.items[j].icon] + ' ';
