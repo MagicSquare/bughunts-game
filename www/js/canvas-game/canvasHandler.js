@@ -6,15 +6,20 @@ define(function(require) {
     var assets = {
         grounds: 	{ url: '/tiles/grounds.png' },
         tileset: 	{ url: '/tiles/tiles.png' },
-        bottlecap: 	{ url: '/tiles/bottlecap.png' },
+        bottlecap: 	{ url: '/tiles/bottlecap_64.png' },
         axe: 		{ url: '/tiles/axe.png' },
-        bug: 		{ url: '/tiles/bug.png' },
-        launcher: 		{ url: '/tiles/launcher.png' }
+        bug: 		{ url: '/tiles/bug_128.png' },
+        stones: 	{ url: '/tiles/stones_64.png' },
+        gems: 		{ url: '/tiles/gems_64.png' },
+        web: 		{ url: '/tiles/web_64.png' },
+        launcher: 	{ url: '/tiles/robot_64.png' },
+        goal: 		{ url: '/tiles/goal2_64.png' },
+        sand: 		{ url: '/tiles/sand_256.png' }
     };
 
     var textures = {},
-        squareSize = 50,
-        tilesScale = 0.64,
+        squareSize = 64,
+        tilesScale = 32 / squareSize,
         texturesLoaded = false;
 
     function loadTexturesFromTileset() {
@@ -32,44 +37,43 @@ define(function(require) {
             }
         }
 
-        var source = textures.tileset.baseTexture.source;
-        textures.stones = [];
-        loadGroupOfTextures(textures.stones, source, 1, [
-            { x: 7, y: 2 },
-            { x: 4, y: 3 },
-            { x: 6, y: 3 },
-            { x: 7, y: 3 }
+        // Load stones
+        var stones = [];
+        loadGroupOfTextures(stones, textures.stones.baseTexture.source, 2, [
+            { x: 0, y: 0 },
+            { x: 1, y: 0 },
+            { x: 2, y: 0 },
+            { x: 3, y: 0 }
         ]);
+        textures.stones = stones;
 
+        // Load gems
+        var gems = [];
+        loadGroupOfTextures(gems, textures.gems.baseTexture.source, 2, [
+            { x: 0, y: 0 },
+            { x: 1, y: 0 },
+            { x: 2, y: 0 }
+        ]);
+        textures.gems = gems;
+
+        // Load grass
         textures.grass = [];
-        loadGroupOfTextures(textures.grass, source, 1, [
+        loadGroupOfTextures(textures.grass, textures.tileset.baseTexture.source, 1, [
             { x: 2, y: 2 },
             { x: 6, y: 4 },
             { x: 7, y: 4 },
             { x: 3, y: 6 }
         ]);
 
-        textures.goal = helper.extractTextureFromCanvas(source, 8 * resolution, 7 * resolution, resolution, resolution);
-
+        // Load bug
         var bugTextures = [];
-        loadGroupOfTextures(bugTextures, textures.bug.baseTexture.source, 2, [
+        loadGroupOfTextures(bugTextures, textures.bug.baseTexture.source, 4, [
             { x: 1, y: 0 },
             { x: 0, y: 1 },
             { x: 0, y: 0 },
             { x: 1, y: 1 }
         ]);
         textures.bug = bugTextures;
-
-        textures.button = [];
-        loadGroupOfTextures(textures.button, source, 1, [
-            { x: 10, y: 3 },
-            { x: 10, y: 4 },
-            { x: 10, y: 7 },
-            { x: 10, y: 8 }
-        ]);
-
-        textures.launcher = helper.extractTextureFromCanvas(textures.launcher.baseTexture.source, 0, 0, resolution, resolution);
-        textures.web = helper.extractTextureFromCanvas(source, 2 * resolution, 8 * resolution, resolution, resolution);
 
     }
 
@@ -84,9 +88,6 @@ define(function(require) {
                 loader.add(key, 'img/assets/' + assets[key].url);
             }
 
-            loader.once('complete', onComplete);
-            loader.load();
-
             function onComplete(loader, resources) {
 
                 for(var key in resources) {
@@ -97,6 +98,9 @@ define(function(require) {
                 onInitialized();
 
             }
+
+            loader.once('complete', onComplete);
+            loader.load();
 
         }
         else {
@@ -126,7 +130,7 @@ define(function(require) {
             self.sprites['bug'] = sprite;
             sprite.anchor.set(0.5, 0.6);
             sprite.realRotation = 0;
-            sprite.scale.set(0.6 / tilesScale, 0.6 / tilesScale);
+            sprite.scale.set(0.3 / tilesScale, 0.3 / tilesScale);
 
             onInitialized();
         });
@@ -156,7 +160,7 @@ define(function(require) {
     canvasHandler.prototype.draw = function draw() {
 
         // Render only if everything is loaded
-        if(this.renderer && this.stage) {
+        if (this.renderer && this.stage) {
             this.renderer.render(this.stage);
         }
 
@@ -164,8 +168,8 @@ define(function(require) {
 
     canvasHandler.prototype.drawGround = function drawGround() {
 
-        var resX = this.state.res.x + 1,
-            resY = this.state.res.y + 1;
+        var resX = this.state.res.x * 2 + 2,
+            resY = this.state.res.y * 2 + 2;
 
         var resolution = squareSize * tilesScale;
         this.stage.removeChild(this.sprites.ground);
@@ -187,10 +191,10 @@ define(function(require) {
         var maxX = resX * 2,
             maxY = resY * 2,
             tile = {x: 0, y:0};
-        for(var x = 0; x < maxX; ++x) {
+        for (var x = 0; x < maxX; ++x) {
 
             tile.x = (0 === x) ? 0 : (maxX - 1 === x) ? 3 : 1 + x % 2;
-            for(var y = 0; y < maxY; ++y) {
+            for (var y = 0; y < maxY; ++y) {
 
                 tile.y = (0 === y) ? 2 : (maxY - 1 === y) ? 5 : 3 + y % 2;
                 drawAutotilePart(context, textures.grounds.baseTexture.source, { x: 5, y: 3 }, { x: tile.x, y:tile.y }, { x: x * halfSquareSize, y: y * halfSquareSize });
@@ -199,17 +203,41 @@ define(function(require) {
 
         }
 
+        context.globalAlpha = 0.5;
+
+        // Add sand
+        var sandRes = textures.sand.width * 0.5;
+        if (groundCanvas.width + resolution >= sandRes && groundCanvas.height + resolution >= sandRes) {
+            var nb = 8 + Math.round(this.rand() * 8);
+            for (var i = 0; i < nb; ++i) {
+                var x = halfSquareSize + (groundCanvas.width - resolution - sandRes) * this.rand(),
+                    y = halfSquareSize + (groundCanvas.height - resolution - sandRes) * this.rand();
+                context.drawImage(textures.sand.baseTexture.source, 0, 0, sandRes * 2, sandRes * 2, x, y, sandRes, sandRes);
+            }
+        }
+
+        // Draw elements on the ground
+        for (var x = 1; x < resX; ++x) {
+            for (var y = 1; y < resY; ++y) {
+
+                if (this.rand() > 0.8) {
+                    var texture = textures.grass[Math.floor(textures.grass.length * this.rand())];
+                    context.drawImage(texture.baseTexture.source, 0, 0, resolution, resolution, x * resolution - halfSquareSize, y * resolution - halfSquareSize, resolution, resolution);
+                }
+
+            }
+        }
+
         var texture = PIXI.Texture.fromCanvas(groundCanvas);
         var sprite = new PIXI.Sprite(texture);
-        sprite.scale.set(1 / tilesScale, 1 / tilesScale);
         this.sprites.ground = sprite;
-        this.stage.addChildAt(sprite, 0);
+        sprite.scale.set(0.5 / tilesScale, 0.5 / tilesScale);
 
     }
 
     canvasHandler.prototype.update = function update(deltaTime) {
 
-        if(this.renderer) {
+        if (this.renderer) {
             // Handle time and update animations (if any)
             this.time += deltaTime;
             TWEEN.update(window.performance.now());
@@ -225,16 +253,16 @@ define(function(require) {
 
         var id = 0;
 
-        if(rotation < step) {
+        if (rotation < step) {
             id = 0;
         }
-        else if(rotation < 3 * step) {
+        else if (rotation < 3 * step) {
             id = 1;
         }
-        else if(rotation < 5 * step) {
+        else if (rotation < 5 * step) {
             id = 2;
         }
-        else if(rotation < 7 * step) {
+        else if (rotation < 7 * step) {
             id = 3;
         }
         this.sprites.bug.rotation = realRotation - 2 * id * step;
@@ -250,15 +278,12 @@ define(function(require) {
 
         var sprite = null,
             texture = null,
-            alpha = 1;
+            alpha = 1,
+            scale = 0.5;
 
         if (isNaN(square.type)){
             switch(square.type) {
                 case 'o':
-                    if(this.rand() > 0.8) {
-                        texture = textures.grass[Math.floor(textures.grass.length * this.rand())];
-                        alpha = 0.5;
-                    }
                     break;
                 case 's':
                     texture = textures.stones[Math.floor(textures.stones.length * this.rand())];
@@ -269,29 +294,27 @@ define(function(require) {
                 default:
                     break;
             }
-        }else{
-            if (this.actors){
-                var actor = this.actors[square.type];
-                console.log(actor);
-                switch(actor.type) {
-                    case 't':
-                        texture = textures.button[0];
-                        break;
-                    case 'm':
-                        texture = textures.launcher;
-                        break;
-                    case 'w':
-                        texture = textures.web;
-                        break;
-                    default:
-                        break;
-                }
+        }
+        else if (this.actors) {
+            var actor = this.actors[square.type];
+            switch(actor.type) {
+                case 't':
+                    texture = textures.gems[0];
+                    break;
+                case 'm':
+                    texture = textures.launcher;
+                    break;
+                case 'w':
+                    texture = textures.web;
+                    break;
+                default:
+                    break;
             }
         }
 
         if(texture !== null) {
             sprite = new PIXI.Sprite(texture);
-            sprite.scale.set(1 / tilesScale, 1 / tilesScale);
+            sprite.scale.set(scale / tilesScale, scale / tilesScale);
             sprite.anchor.set(0.5, 0.5);
             sprite.alpha = alpha;
             this.stage.addChild(sprite);
@@ -314,13 +337,15 @@ define(function(require) {
 
     canvasHandler.prototype.setState = function setState(state, actors) {
 
+    	var changeSize = true;
+    	if(this.state != null && state.res.x == this.state.res.x && state.res.y == this.state.res.y) {
+    		changeSize = false;
+    	}
         this.state = state;
         this.actors = actors;
         this.rand = helper.lcg(this.state.res.x * this.state.res.y);
 
         this.stage = new PIXI.Container();
-        this.drawGround();
-        this.renderer.resize(this.sprites.ground.width, this.sprites.ground.height);
 
         // Add special squares on the map
         this.map = [];
@@ -332,6 +357,12 @@ define(function(require) {
 
             }
         }
+
+        if(changeSize) {
+        	this.drawGround();
+        	this.renderer.resize(this.sprites.ground.width, this.sprites.ground.height);
+        }
+        this.stage.addChildAt(this.sprites.ground, 0);
 
         // Add the bug
         this.setBugRotation(Math.PI * 0.5);
@@ -369,8 +400,8 @@ define(function(require) {
 
         var sprite = new PIXI.Sprite(texture);
         sprite.anchor.set(0.5, 0.5);
-        this.moveSquareSprite(sprite, posFrom.x, posFrom.y);
         sprite.rotation = rotationFrom;
+        this.moveSquareSprite(sprite, posFrom.x, posFrom.y);
         this.stage.addChild(sprite);
 
         var onAnimationComplete = function() {
@@ -390,7 +421,7 @@ define(function(require) {
                 y: posTo.y,
                 rotation: rotationTo
             },
-            easing: TWEEN.Easing.Quadratic.In,
+            easing: TWEEN.Easing.Cubic.Out,
             onUpdate: function() {
                 self.moveSquareSprite(sprite, this.x, this.y);
                 sprite.rotation = this.rotation;
