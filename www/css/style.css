@@ -18,3 +18,8 @@ button.icon {
 .tablet-function {
 	background-color: #E9F5E1;
 }
+
+.tablet .grid {
+	background-image: url('../img/5x5grid.png');
+	background-size : 100% auto;
+}

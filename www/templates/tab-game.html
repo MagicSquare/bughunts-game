@@ -29,9 +29,9 @@
                         </div>
                         <div flex="100" flex-sm="65">
 
-                            <md-card class="tablet-main">
+                            <md-card class="tablet tablet-main">
                                 <md-card-content>
-                                    <div gridster="gridsterOpts">
+                                    <div class="grid" gridster="gridsterOpts">
                                         <ul>
                                             <li gridster-item="item.gridster" ng-repeat="item in tablet.items">
                                                 <img ng-src="{{ getTometteUrl(item.icon) }}" alt="{{ item.icon }}" style="width:100%"/>
@@ -46,9 +46,9 @@
                                     </div>
                                 </md-card-content>
                             </md-card>
-                            <md-card class="tablet-function">
+                            <md-card class="tablet tablet-function">
                                 <md-card-content>
-                                    <div gridster="gridsterOptsFunction">
+                                    <div class="grid" gridster="gridsterOptsFunction">
                                         <ul>
                                             <li gridster-item="item.gridster" ng-repeat="item in tabletFunction.items">
                                                 <img ng-src="{{ getTometteUrl(item.icon) }}" alt="{{ item.icon }}" style="width:100%"/>

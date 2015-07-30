@@ -167,7 +167,25 @@ angular.module('starter.controllers', [])
 
         }
 
+        var gridsterBaseOpts = {
+            columns: $scope.tablet.colSize,
+            minColumns: $scope.tablet.colSize,
+            minRows: $scope.tablet.rowSize,
+            maxRows: $scope.tablet.rowSize,
+            pushing: true,
+            floating: false,
+            swapping: true,
+            margins: [5, 5],
+            outerMargin: true,
+            mobileModeEnabled: false,
+            resizable: {
+                enabled: false
+            }
+        };
+        $scope.gridsterOpts = gridsterBaseOpts;
+
         Canvas.ready = function() {
+
             var url = Settings.host + '/challenge/' + $scope.challenge + '?callback=JSON_CALLBACK';
             $http.jsonp(url)
                 .success(function(data) {
@@ -181,18 +199,6 @@ angular.module('starter.controllers', [])
                     console.log('Loading command result: Error ' + status);
                 });
 
-                var gridsterBaseOpts = {
-                    pushing: true,
-                    floating: false,
-                    swapping: true,
-                    margins: [5, 5],
-                    outerMargin: true,
-                    mobileModeEnabled: false,
-                    resizable: {
-                        enabled: false
-                    }
-                };
-
                 function setOptsFromTablet(opts, tablet) {
                     opts.columns = tablet.colSize;
                     opts.minColumns = tablet.colSize;
@@ -204,6 +210,7 @@ angular.module('starter.controllers', [])
 
                 $scope.gridsterOpts = setOptsFromTablet(Canvas.helper.cloneObject(gridsterBaseOpts), $scope.tablet);
                 $scope.gridsterOptsFunction = setOptsFromTablet(Canvas.helper.cloneObject(gridsterBaseOpts), $scope.tabletFunction);
+
         };
 
         $scope.getTometteUrl = getTometteUrl;
