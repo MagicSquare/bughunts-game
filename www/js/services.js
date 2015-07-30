@@ -17,10 +17,11 @@ angular.module('starter.services', [])
 
   this.load = function() {
 
-    requirejs(['js/canvas-game/canvasHandler', 'js/canvas-game/game', 'js/canvas-game/point', 'js/canvas-game/helper', 'js/canvas-game/map'], function(CanvasHandler, Game) {
+    requirejs(['js/canvas-game/canvasHandler', 'js/canvas-game/game', 'js/canvas-game/point', 'js/canvas-game/helper', 'js/canvas-game/map'], function(CanvasHandler, Game, Point, helper, map) {
 
       self.handler = new CanvasHandler();
       self.game = new Game(self.handler);
+      self.helper = helper;
       self.game.init(function() {
 
         self.isReady = true;

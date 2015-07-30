@@ -88,6 +88,15 @@ define(function(require) {
 		
 	}
 
+	function cloneObject(obj) {
+		if (null == obj || "object" != typeof obj) return obj;
+		var copy = obj.constructor();
+		for (var attr in obj) {
+			if (obj.hasOwnProperty(attr)) copy[attr] = obj[attr];
+		}
+		return copy;
+	}
+
 	return {
 		getDefault: getDefault,
 		getDefaults: getDefaults,
@@ -95,7 +104,8 @@ define(function(require) {
 		lcg: lcg,
 		stringToRotation: stringToRotation,
 		dirToRotation: dirToRotation,
-		rotationToDir: rotationToDir
+		rotationToDir: rotationToDir,
+		cloneObject: cloneObject
 	}
   
 });

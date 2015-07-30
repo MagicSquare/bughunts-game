@@ -114,6 +114,11 @@ define(function(require) {
 
 		var StR = helper.stringToRotation;
 
+		if (typeof step === 'undefined' || step.length === 0) {
+			onComplete();
+			return;
+		}
+
 		var longestDuration = helper.getDefault(1, step[0].duration),
 			longestAnimation = 0;
 		for(var i = 0; i < step.length; ++i) {

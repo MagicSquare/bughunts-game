@@ -11,12 +11,12 @@
                         <!--<img ng-src="{{ gameImage }}" alt="Game" style="width:100%"/>-->
                     </div>
 
-                    <div flex flex-gt-sm="33" layout="row">
-                        <div offset-sm="20" flex-sm="60">
+                    <div flex flex-gt-sm="33" layout="row" layout-wrap>
+                        <div flex="100" flex-sm="35">
 
                             <md-card flex class="available-tomettes">
                                 <md-card-content layout="row" layout-wrap>
-                                    <div flex="20" ng-repeat="tomette in tomettes">
+                                    <div flex="20" flex-sm="50" ng-repeat="tomette in tomettes">
                                         <md-button class="md-icon-button" aria-label="{{ tomette }}"
                                                    ng-mousedown="handleTometteDown(tomette)"
                                                    ng-mouseup="handleTometteUp(tomette)">
@@ -26,7 +26,10 @@
                                 </md-card-content>
                             </md-card>
 
-                            <md-card>
+                        </div>
+                        <div flex="100" flex-sm="65">
+
+                            <md-card class="tablet-main">
                                 <md-card-content>
                                     <div gridster="gridsterOpts">
                                         <ul>
@@ -35,19 +38,28 @@
                                             </li>
                                         </ul>
                                     </div>
+                                    <div layout="row" layout-align="space-between center">
+                                        <md-chips>
+                                            <md-chip>Instructions</md-chip>
+                                        </md-chips>
+                                        <md-button aria-label="Play" class="md-fab md-mini md-warn icon ion-close-round" ng-click="deleteMainTabletLast()"></md-button>
+                                    </div>
                                 </md-card-content>
                             </md-card>
-                            <md-card>
+                            <md-card class="tablet-function">
                                 <md-card-content>
                                     <div gridster="gridsterOptsFunction">
                                         <ul>
-                                            <li gridster-item="tabletFunction.tometteFunction.gridster">
-                                                <img ng-src="{{ getTometteUrl(tabletFunction.tometteFunction.icon) }}" alt="{{ tabletFunction.tometteFunction.icon }}" style="width:100%"/>
-                                            </li>
                                             <li gridster-item="item.gridster" ng-repeat="item in tabletFunction.items">
                                                 <img ng-src="{{ getTometteUrl(item.icon) }}" alt="{{ item.icon }}" style="width:100%"/>
                                             </li>
                                         </ul>
+                                    </div>
+                                    <div layout="row" layout-align="space-between center">
+                                        <md-chips>
+                                            <md-chip>Fonction</md-chip>
+                                        </md-chips>
+                                        <md-button aria-label="Play" class="md-fab md-mini md-warn icon ion-close-round" ng-click="deleteFuncTabletLast()"></md-button>
                                     </div>
                                 </md-card-content>
                             </md-card>
@@ -77,8 +89,8 @@
 
                 <md-card>
                     <md-card-content>
-                        <div layout="row" layout-align="space-around center">
-                            <div id="fb-like" class="col fb-page" data-href="https://www.facebook.com/LaChasseAuxBugs"
+                        <div layout="row" layout-align="space-around center" layout-wrap>
+                            <div flex="33" flex-sm="100" id="fb-like" class="col fb-page" data-href="https://www.facebook.com/LaChasseAuxBugs"
                                  data-small-header="true" data-hide-cover="false" data-adapt-container-width="true"
                                  data-show-facepile="false" data-show-posts="false">
                                 <div class="fb-xfbml-parse-ignore">
@@ -86,10 +98,12 @@
                                             href="https://www.facebook.com/LaChasseAuxBugs">La Chasse Aux Bugs</a></blockquote>
                                 </div>
                             </div>
-                            <a href="http://fr.ulule.com/chasseauxbugs" target="_blank" style="margin: auto;">
-                                <md-button aria-label="Ulule" class="md-raised">Aidez nous en participant à la collecte</md-button><!--
-                                --><img border="0" alt="Ulule" src="img/ulule.png" width="50" height="50">
-                            </a>
+                            <div flex="67" flex-sm="100">
+                                <a href="http://fr.ulule.com/chasseauxbugs" target="_blank" style="margin: auto;">
+                                    <md-button aria-label="Ulule" class="md-raised">Aidez nous en participant à la collecte</md-button><!--
+                                    --><img border="0" alt="Ulule" src="img/ulule.png" width="50" height="50">
+                                </a>
+                            </div>
                         </div>
                     </md-card-content>
                 </md-card>

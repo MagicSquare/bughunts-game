@@ -1,15 +1,7 @@
 define(function(require) {
 
-  var Point = require('js/canvas-game/point');
-
-  function cloneObject(obj) {
-      if (null == obj || "object" != typeof obj) return obj;
-      var copy = obj.constructor();
-      for (var attr in obj) {
-          if (obj.hasOwnProperty(attr)) copy[attr] = obj[attr];
-      }
-      return copy;
-  }
+  var Point = require('js/canvas-game/point'),
+      helper = require('js/canvas-game/helper');
 
   function Map(x, y, squares, actors) {
 
@@ -82,7 +74,7 @@ define(function(require) {
 
   Map.prototype.clone = function clone() {
 
-      return new Map(this.res.x, this.res.y, this.squares, cloneObject(this.actors));
+      return new Map(this.res.x, this.res.y, this.squares, helper.cloneObject(this.actors));
 
   }
 

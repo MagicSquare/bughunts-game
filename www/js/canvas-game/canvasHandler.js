@@ -221,6 +221,8 @@ define(function(require) {
             for (var y = 1; y < resY; ++y) {
 
                 if (this.rand() > 0.8) {
+                    var posX = x - 0.5 + (this.rand() - 0.5) * 0.5,
+                        posY = y - 0.5 + (this.rand() - 0.5) * 0.5;
                     var texture = textures.grass[Math.floor(textures.grass.length * this.rand())];
                     context.drawImage(texture.baseTexture.source, 0, 0, resolution, resolution, x * resolution - halfSquareSize, y * resolution - halfSquareSize, resolution, resolution);
                 }
