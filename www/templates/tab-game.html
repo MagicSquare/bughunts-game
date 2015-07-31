@@ -3,7 +3,7 @@
         <div layout="row">
             <div flex offset-lg="10" flex-lg="80" offset-gt-lg="20" flex-gt-lg="60">
 
-                <h2>Challenge #{{challenge}}</h2>
+                <h1>Challenge #{{challenge}}</h1>
                 <div layout-gt-sm="row" mayout-sm="column">
 
                     <div flex flex-gt-sm="67">
@@ -19,13 +19,17 @@
                                     <div flex="20" flex-sm="50" ng-repeat="tomette in tomettes">
                                         <md-button class="md-icon-button" aria-label="{{ tomette }}"
                                                     on-tap="addTometteToInstructions(tomette)"
-                                                    on-hold="addTometteToFunction(tomette)">
+                                                    on-hold="addTometteToFunction(tomette, functionOn)">
                                             <img ng-src="{{ getTometteUrl(tomette) }}" alt="{{ tomette }}"/>
                                         </md-button>
                                     </div>
                                 </md-card-content>
                             </md-card>
 
+                        </div>
+                        <div>
+                            <md-button aria-label="Reset" class="md-fab md-primary md-hue-2 icon ion-refresh" on-touch="askReset()"></md-button>
+                            <md-button aria-label="Play" class="md-fab md-primary icon ion-play" on-touch="run()"></md-button>
                         </div>
                         <div flex="100" flex-sm="65">
 
@@ -46,7 +50,7 @@
                                     </div>
                                 </md-card-content>
                             </md-card>
-                            <md-card class="tablet tablet-function">
+                            <md-card ng-if="functionOn" class="tablet tablet-function">
                                 <md-card-content>
                                     <div class="grid" gridster="gridsterOptsFunction">
                                         <ul>
@@ -63,14 +67,6 @@
                                     </div>
                                 </md-card-content>
                             </md-card>
-
-                            <div>
-                                <md-button aria-label="Reset" class="md-fab md-primary md-hue-2 icon ion-refresh" on-touch="askReset()"></md-button>
-                                <md-button aria-label="Play" class="md-fab md-primary icon ion-play" on-touch="run()"></md-button>
-                                <span class="scoreDisplay" ng-if="result.score">
-                                    <md-button class="md-raised md-primary">{{ result.score }} points</md-button>
-                                </span>
-                            </div>
                         </div>
                     </div>
 

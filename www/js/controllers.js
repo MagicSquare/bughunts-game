@@ -3,6 +3,8 @@ angular.module('starter.controllers', [])
     .controller('ChallengeCtrl', function($scope, $stateParams, $http, Settings, Canvas, $mdDialog) {
 
         $scope.challenge = $stateParams.challenge;
+        var str = location.search;
+        $scope.functionOn = str.search("/\?f=1")!=-1;
 
         $scope.tablet = {
             items: [],
@@ -14,7 +16,10 @@ angular.module('starter.controllers', [])
             colSize: 5,
             rowSize: 1
         };
-        $scope.tomettes = ['left', 'forward', 'right', 'back', 'repeat_2', 'repeat_3', 'repeat_4', 'repeat_5', 'function'];
+        $scope.tomettes = ['left', 'forward', 'right', 'back', 'repeat_2', 'repeat_3', 'repeat_4', 'repeat_5'];
+        if ($scope.functionOn){
+            $scope.tomettes.push('function');
+        }
         $scope.tomettesCmd = {'left': 'LE', 'forward': 'FO', 'right': 'RI', 'back': 'BA'};
         //$scope.gameImage = 'https://placeholdit.imgix.net/~text?txtsize=23&txt=Chargement...&w=300&h=300';
         function getTometteUrl(tomette) {
@@ -39,12 +44,12 @@ angular.module('starter.controllers', [])
                         if (commands.length > 0) {
                             currentCommand = '(' + commands.pop() + ')' + nbOfRepeat;
                         }
-                    } 
+                    }
                     else if (instruction === 'function') {
                         if (handleFunction) {
                             currentCommand = 'F';
                         }
-                    } 
+                    }
                     else {
                         currentCommand = $scope.tomettesCmd[instruction];
                     }
@@ -111,7 +116,7 @@ angular.module('starter.controllers', [])
 
 
         function deleteFuncTabletLast() {
-        	
+
             $scope.tabletFunction.items.pop();
         }
 
@@ -138,15 +143,15 @@ angular.module('starter.controllers', [])
         }
 
         function addTometteToInstructions(icon) {
-            
+
             handleTomette($scope.tablet, icon);
 
         }
 
-        function addTometteToFunction(icon) {
-            
-            handleTomette($scope.tabletFunction, icon);
-
+        function addTometteToFunction(icon, functionOn) {
+            if (functionOn){
+                handleTomette($scope.tabletFunction, icon);
+            }
         }
 
         function ordertomettes(tablet) {
@@ -163,15 +168,15 @@ angular.module('starter.controllers', [])
         function askReset() {
 
             $mdDialog.show($mdDialog.confirm()
-                .parent(angular.element(document.body))
-                .title('Remise à zéro')
-                .content('Voulez-vous supprimer toutes vos instructions?')
-                .ariaLabel('Remise à zéro')
-                .ok('Oui')
-                .cancel('Non')
-            ).then(function() {
-                reset();
-            }, function() {});
+                    .parent(angular.element(document.body))
+                    .title('Remise à zéro')
+                    .content('Voulez-vous supprimer toutes vos instructions?')
+                    .ariaLabel('Remise à zéro')
+                    .ok('Oui')
+                    .cancel('Non')
+                ).then(function() {
+                    reset();
+                }, function() {});
 
         }
 
@@ -207,17 +212,17 @@ angular.module('starter.controllers', [])
                     console.log('Loading command result: Error ' + status);
                 });
 
-                function setOptsFromTablet(opts, tablet) {
-                    opts.columns = tablet.colSize;
-                    opts.minColumns = tablet.colSize;
-                    opts.minRows = tablet.rowSize;
-                    opts.maxRows = tablet.rowSize;
-                    opts.draggable = { enable: true, stop: function stop(event, $element, widget) { ordertomettes(tablet); } };
-                    return opts;
-                }
+            function setOptsFromTablet(opts, tablet) {
+                opts.columns = tablet.colSize;
+                opts.minColumns = tablet.colSize;
+                opts.minRows = tablet.rowSize;
+                opts.maxRows = tablet.rowSize;
+                opts.draggable = { enable: true, stop: function stop(event, $element, widget) { ordertomettes(tablet); } };
+                return opts;
+            }
 
-                $scope.gridsterOpts = setOptsFromTablet(Canvas.helper.cloneObject(gridsterBaseOpts), $scope.tablet);
-                $scope.gridsterOptsFunction = setOptsFromTablet(Canvas.helper.cloneObject(gridsterBaseOpts), $scope.tabletFunction);
+            $scope.gridsterOpts = setOptsFromTablet(Canvas.helper.cloneObject(gridsterBaseOpts), $scope.tablet);
+            $scope.gridsterOptsFunction = setOptsFromTablet(Canvas.helper.cloneObject(gridsterBaseOpts), $scope.tabletFunction);
 
         };
 
