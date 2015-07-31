@@ -28,7 +28,7 @@ angular.module('starter.controllers', [])
 
         function run() {
 
-            function tabletToCommands(tablet, handleFunction) {
+            function tabletToInstructions(tablet, handleFunction) {
 
                 var commands = [];
                 for (var i = 0; i < tablet.items.length; ++i) {
@@ -57,14 +57,15 @@ angular.module('starter.controllers', [])
             }
 
             var instructions = [];
+            
             // Add function declaration (if any)
-            if ($scope.tabletFunction.items.length > 0) {
-                var functionInstructions = tabletToCommands($scope.tabletFunction, false);
+            var functionInstructions = tabletToInstructions($scope.tabletFunction, false);
+            if (functionInstructions.length > 0) {
                 instructions.push('F[' + functionInstructions.join(' ') + ']');
             }
 
             // Add instructions
-            instructions = instructions.concat(tabletToCommands($scope.tablet, true));
+            instructions = instructions.concat(tabletToInstructions($scope.tablet, true));
             var command = instructions.join(' ');
 
             // Try the challenge with the web service

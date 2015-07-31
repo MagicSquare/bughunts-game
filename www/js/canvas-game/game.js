@@ -119,11 +119,11 @@ define(function(require) {
 			return;
 		}
 
-		var longestDuration = helper.getDefault(1, step[0].duration),
+		var longestDuration = 0,
 			longestAnimation = 0;
 		for(var i = 0; i < step.length; ++i) {
 			var duration = helper.getDefault(1, step[i].duration);
-			if(duration > longestDuration && animation.type != 'del') {
+			if(duration > longestDuration && step[i].type != 'del') {
 				longestDuration = duration;
 				longestAnimation = i;
 			}
