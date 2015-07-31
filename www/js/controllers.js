@@ -1,6 +1,6 @@
 angular.module('starter.controllers', [])
 
-    .controller('ChallengeCtrl', function($scope, $stateParams, $state, $http, Settings, Canvas, $timeout) {
+    .controller('ChallengeCtrl', function($scope, $stateParams, $http, Settings, Canvas, $mdDialog) {
 
         $scope.challenge = $stateParams.challenge;
 
@@ -21,7 +21,7 @@ angular.module('starter.controllers', [])
             return 'img/icons/' + tomette + '.png';
         };
 
-        function clear() {
+        function reset() {
             $scope.tablet.items = [];
             $scope.tabletFunction.items = [];
         };
@@ -160,6 +160,21 @@ angular.module('starter.controllers', [])
 
         }
 
+        function askReset() {
+
+            $mdDialog.show($mdDialog.confirm()
+                .parent(angular.element(document.body))
+                .title('Remise à zéro')
+                .content('Voulez-vous supprimer toutes vos instructions?')
+                .ariaLabel('Remise à zéro')
+                .ok('Oui')
+                .cancel('Non')
+            ).then(function() {
+                reset();
+            }, function() {});
+
+        }
+
         var gridsterBaseOpts = {
             columns: $scope.tablet.colSize,
             minColumns: $scope.tablet.colSize,
@@ -209,7 +224,7 @@ angular.module('starter.controllers', [])
         $scope.addTometteToInstructions = addTometteToInstructions;
         $scope.addTometteToFunction = addTometteToFunction;
         $scope.getTometteUrl = getTometteUrl;
-        $scope.clear = clear;
+        $scope.askReset = askReset;
         $scope.run = run;
         $scope.shareScore = shareScore;
         $scope.deleteMainTabletLast = deleteMainTabletLast;
