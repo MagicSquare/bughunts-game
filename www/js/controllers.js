@@ -18,7 +18,7 @@ angular.module('starter.controllers', [])
         $scope.tomettesCmd = {'left': 'LE', 'forward': 'FO', 'right': 'RI', 'back': 'BA'};
         //$scope.gameImage = 'https://placeholdit.imgix.net/~text?txtsize=23&txt=Chargement...&w=300&h=300';
         function getTometteUrl(tomette) {
-            return 'img/icons/' + tomette + '.png';
+            return 'img/icons/64/' + tomette + '.png';
         };
 
         function reset() {
