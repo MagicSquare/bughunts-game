@@ -422,6 +422,7 @@ define(function(require) {
         var sprite = new PIXI.Sprite(texture);
         sprite.anchor.set(0.5, 0.5);
         sprite.rotation = rotationFrom;
+        sprite.scale.set(0.5 / tilesScale, 0.5 / tilesScale);
         this.moveSquareSprite(sprite, posFrom.x, posFrom.y);
         this.stage.addChild(sprite);
 
