@@ -23,3 +23,11 @@ button.icon {
 	background-image: url('../img/5x5grid.png');
 	background-size : 100% auto;
 }
+
+.scoreDisplay button {
+	margin-left: 20px;
+	width: 40%;
+	padding: 5px;
+	color: #007aff;
+	font-size: large;
+}

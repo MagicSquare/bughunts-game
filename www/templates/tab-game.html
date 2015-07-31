@@ -67,8 +67,10 @@
                             <div>
                                 <md-button aria-label="Reset" class="md-fab md-primary md-hue-2 icon ion-refresh" on-touch="askReset()"></md-button>
                                 <md-button aria-label="Play" class="md-fab md-primary icon ion-play" on-touch="run()"></md-button>
+                                <span class="scoreDisplay" ng-if="result.score">
+                                    <md-button class="md-raised md-primary">{{ result.score }} points</md-button>
+                                </span>
                             </div>
-
                         </div>
                     </div>
 
