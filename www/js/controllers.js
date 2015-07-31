@@ -57,7 +57,7 @@ angular.module('starter.controllers', [])
             }
 
             var instructions = [];
-            
+
             // Add function declaration (if any)
             var functionInstructions = tabletToInstructions($scope.tabletFunction, false);
             if (functionInstructions.length > 0) {
@@ -103,26 +103,6 @@ angular.module('starter.controllers', [])
 
         };
 
-        var tometteRemoved, removeTimeout;
-        $scope.handleTometteDown = function(icon) {
-
-            tometteRemoved = false;
-            removeTimeout = $timeout(function() {
-                tometteRemoved = true;
-                handleTomette($scope.tabletFunction, icon);
-            }, 250);
-
-        };
-
-        $scope.handleTometteUp = function(icon) {
-
-            $timeout.cancel(removeTimeout);
-            if (!tometteRemoved) {
-                handleTomette($scope.tablet, icon);
-            }
-
-        };
-
         function deleteMainTabletLast() {
 
             $scope.tablet.items.pop();
@@ -154,6 +134,18 @@ angular.module('starter.controllers', [])
                     icon: icon
                 });
             }
+
+        }
+
+        function addTometteToInstructions(icon) {
+            
+            handleTomette($scope.tablet, icon);
+
+        }
+
+        function addTometteToFunction(icon) {
+            
+            handleTomette($scope.tabletFunction, icon);
 
         }
 
@@ -214,6 +206,8 @@ angular.module('starter.controllers', [])
 
         };
 
+        $scope.addTometteToInstructions = addTometteToInstructions;
+        $scope.addTometteToFunction = addTometteToFunction;
         $scope.getTometteUrl = getTometteUrl;
         $scope.clear = clear;
         $scope.run = run;
