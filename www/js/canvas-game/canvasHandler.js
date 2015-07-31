@@ -230,6 +230,22 @@ define(function(require) {
             }
         }
 
+        // Draw the grid
+        context.globalAlpha = 0.5;
+        context.setLineDash([4, 4]);
+        context.beginPath();
+        for (var x = 0; x <= this.state.res.x; ++x) {
+            var pos = resolution + x * resolution * 2;
+            context.moveTo(pos, resolution);
+            context.lineTo(pos, resolution + this.state.res.y * resolution * 2);
+        }
+        for (var y = 0; y <= this.state.res.y; ++y) {
+            var pos = resolution + y * resolution * 2;
+            context.moveTo(resolution, pos);
+            context.lineTo(resolution + this.state.res.x * resolution * 2, pos);
+        }
+        context.stroke();
+
         var texture = PIXI.Texture.fromCanvas(groundCanvas);
         var sprite = new PIXI.Sprite(texture);
         this.sprites.ground = sprite;
