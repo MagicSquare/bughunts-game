@@ -203,12 +203,11 @@ define(function(require) {
 
         }
 
-        context.globalAlpha = 0.5;
-
         // Add sand
+        context.globalAlpha = 0.5;
         var sandRes = textures.sand.width * 0.5;
         if (groundCanvas.width + resolution >= sandRes && groundCanvas.height + resolution >= sandRes) {
-            var nb = 8 + Math.round(this.rand() * 8);
+            var nb = 12 + Math.round(this.rand() * 12);
             for (var i = 0; i < nb; ++i) {
                 var x = halfSquareSize + (groundCanvas.width - resolution - sandRes) * this.rand(),
                     y = halfSquareSize + (groundCanvas.height - resolution - sandRes) * this.rand();
@@ -217,14 +216,15 @@ define(function(require) {
         }
 
         // Draw elements on the ground
-        for (var x = 1; x < resX; ++x) {
-            for (var y = 1; y < resY; ++y) {
+        context.globalAlpha = 0.4;
+        for (var x = 1; x < resX - 1; ++x) {
+            for (var y = 1; y < resY - 1; ++y) {
 
-                if (this.rand() > 0.8) {
-                    var posX = x - 0.5 + (this.rand() - 0.5) * 0.5,
-                        posY = y - 0.5 + (this.rand() - 0.5) * 0.5;
+                if (this.rand() > 0.6) {
+                    var posX = x + 0.5 + (this.rand() - 0.5) * 0.3,
+                        posY = y + 0.5 + (this.rand() - 0.5) * 0.3;
                     var texture = textures.grass[Math.floor(textures.grass.length * this.rand())];
-                    context.drawImage(texture.baseTexture.source, 0, 0, resolution, resolution, x * resolution - halfSquareSize, y * resolution - halfSquareSize, resolution, resolution);
+                    context.drawImage(texture.baseTexture.source, 0, 0, resolution, resolution, posX * resolution - halfSquareSize, posY * resolution - halfSquareSize, resolution, resolution);
                 }
 
             }
