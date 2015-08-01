@@ -24,12 +24,13 @@ angular.module('starter.controllers', [])
         //$scope.gameImage = 'https://placeholdit.imgix.net/~text?txtsize=23&txt=Chargement...&w=300&h=300';
         function getTometteUrl(tomette) {
             return 'img/icons/64/' + tomette + '.png';
-        };
+        }
 
         function reset() {
             $scope.tablet.items = [];
             $scope.tabletFunction.items = [];
-        };
+            initGame();
+        }
 
         function run() {
 
@@ -230,8 +231,8 @@ angular.module('starter.controllers', [])
         };
         $scope.gridsterOpts = gridsterBaseOpts;
 
-        Canvas.ready = function() {
-
+        Canvas.ready = initGame;
+        function initGame() {
             var url = Settings.host + '/challenge/' + $scope.challenge + '?callback=JSON_CALLBACK';
             $http.jsonp(url)
                 .success(function(data) {
@@ -257,7 +258,7 @@ angular.module('starter.controllers', [])
             $scope.gridsterOpts = setOptsFromTablet(Canvas.helper.cloneObject(gridsterBaseOpts), $scope.tablet);
             $scope.gridsterOptsFunction = setOptsFromTablet(Canvas.helper.cloneObject(gridsterBaseOpts), $scope.tabletFunction);
 
-        };
+        }
 
         $scope.addTometteToInstructions = addTometteToInstructions;
         $scope.addTometteToFunction = addTometteToFunction;
