@@ -385,7 +385,13 @@ define(function(require) {
         this.stage.addChildAt(this.sprites.ground, 0);
 
         // Add the bug
-        this.setBugRotation(Math.PI * 0.5);
+        for (var a = 0; a < actors.length; a++) {
+            if (actors[a].type === 'l') {
+                state.bug.dir = actors[0].dir;
+            }
+        }
+        var rotation = helper.dirToRotation(state.bug.dir);
+        this.setBugRotation(rotation);
         this.stage.addChild(this.sprites.bug);
         this.moveSquareSprite(this.sprites.bug, state.bug.pos.x, state.bug.pos.y);
 
