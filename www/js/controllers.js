@@ -1,6 +1,6 @@
 angular.module('starter.controllers', [])
 
-    .controller('ChallengeCtrl', function($scope, $stateParams, $http, Settings, Canvas, $mdDialog) {
+    .controller('ChallengeCtrl', function($scope, $stateParams, $state, $http, Settings, Canvas, $mdDialog) {
 
         $scope.challenge = $stateParams.challenge;
         var str = location.search;
@@ -84,7 +84,7 @@ angular.module('starter.controllers', [])
                     if(Canvas.isReady) {
                         Canvas.game.parseChallengeTry(data, function() {
                             $scope.result = data;
-                            $scope.$apply();
+                            $scope.showScoreDialog();
                         });
                     }
                     else {
@@ -95,6 +95,39 @@ angular.module('starter.controllers', [])
                     console.log('Loading command result: Error ' + status);
                 });
         };
+
+        $scope.showScoreDialog = function(){
+            $mdDialog.show({
+                controller : showScoreDialogController,
+                locals : {
+                    result : $scope.result
+                },
+                templateUrl : 'templates/dialog-score.html'
+            });
+        };
+
+        function showScoreDialogController($scope, $mdDialog, result){
+            $scope.result = result;
+            $scope.retryChallenge = function(){
+                $mdDialog.hide();
+            }
+            $scope.nextChallenge = function(){
+                $mdDialog.hide();
+                var nextChallenge = $scope.result.challenge;
+                nextChallenge = nextChallenge.substr(1);//remove #
+                nextChallenge = addIntToHexa(1, nextChallenge);
+                nextChallenge = '0x'+nextChallenge;
+                $state.go("tab.challenge", {challenge : nextChallenge});
+            };
+        };
+
+        function addIntToHexa(i, hexaNumber){
+            var result = (parseInt(hexaNumber, 16) + i).toString(16);
+            while (result.length < 4){
+                result = '0' + result; // 0 padding
+            }
+            return result;
+        }
 
         function shareScore(){
 
