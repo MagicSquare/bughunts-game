@@ -3,9 +3,9 @@
     <md-dialog-content>
         <div layout="row">
             <div flex>
-                <h2 class="md-display-4">{{result.win ? "Bravo !" : "Dommage..."}}</h2>
+                <h2 class="md-display-4">{{result.win ? "Bravo !" : "BUG !"}}</h2>
                 <p class="md-display-2" ng-class="{balanced: result.win}">
-                    {{result.win ? "Tu as réussi le challenge avec un score de " : "Tu as raté le challenge"}}
+                    {{result.win ? "Tu as réussi le challenge avec un score de " : "Dommage... Tu as raté le challenge"}}
                 </p>
                 <div class="md-display-4" ng-if="result.win" style="text-align: center;">
                         {{result.score}}
