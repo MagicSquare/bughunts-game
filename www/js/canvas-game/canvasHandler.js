@@ -75,6 +75,17 @@ define(function(require) {
         ]);
         textures.bug = bugTextures;
 
+        // Load robot
+        var launcherTextures = [];
+        loadGroupOfTextures(launcherTextures, textures.launcher.baseTexture.source, 2, [
+            { x: 1, y: 0 },
+            { x: 0, y: 1 },
+            { x: 0, y: 0 },
+            { x: 1, y: 1 }
+        ]);
+        textures.launcher = launcherTextures;
+
+
     }
 
     function loadTextures(onInitialized) {
@@ -263,6 +274,28 @@ define(function(require) {
 
     }
 
+    canvasHandler.prototype.getRobotRotationFrame = function (realRotation) {
+
+        var rotation = (realRotation + 2 * Math.PI) % (2 * Math.PI),
+            step = Math.PI / 4;
+
+        var id = 0;
+
+        if (rotation < step) {
+            id = 0;
+        }
+        else if (rotation < 3 * step) {
+            id = 1;
+        }
+        else if (rotation < 5 * step) {
+            id = 2;
+        }
+        else if (rotation < 7 * step) {
+            id = 3;
+        }
+        return id;
+    }
+
     canvasHandler.prototype.setBugRotation = function setBugRotation(realRotation) {
 
         this.sprites.bug.realRotation = realRotation;
@@ -289,7 +322,6 @@ define(function(require) {
             this.bugSpriteTexture = id;
             this.sprites.bug.texture = textures.bug[id];
         }
-
     }
 
     canvasHandler.prototype.addSquare = function addSquare(x, y, square) {
@@ -320,7 +352,8 @@ define(function(require) {
                     texture = textures.gems[0];
                     break;
                 case 'm':
-                    texture = textures.launcher;
+                    var rotation = helper.dirToRotation(actor.dir);
+                    texture = textures.launcher[this.getRobotRotationFrame(rotation)];
                     break;
                 case 'w':
                     texture = textures.web;
@@ -389,7 +422,7 @@ define(function(require) {
             if (actors[a].type === 'l') {
                 state.bug.dir = actors[0].dir;
             }
-        }
+        } // TODO : use state.bug.dir ?
         var rotation = helper.dirToRotation(state.bug.dir);
         this.setBugRotation(rotation);
         this.stage.addChild(this.sprites.bug);
