@@ -2,7 +2,7 @@ angular.module('starter.services', [])
 
 .service('Settings', function() {
   
-  this.host = 'http://lachasseauxbugs.fr/service';
+  this.host = 'http://service.lachasseauxbugs.fr:8111';
   //this.host = 'http://127.0.0.1:8111';
 
 })
