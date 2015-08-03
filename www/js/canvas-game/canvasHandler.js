@@ -18,47 +18,41 @@ define(function(require) {
     };
 
     var textures = {},
-        squareSize = 64,
-        tilesScale = 32 / squareSize,
-        texturesLoaded = false;
+        texturesLoaded = false,
+        tileResolution = 32;
 
     function loadTexturesFromTileset() {
 
-        var resolution = squareSize * tilesScale;
-        function loadGroupOfTextures(array, source, scale, coordinates) {
+        function loadGroupOfTextures(source, scale, coordinates) {
+            var textures = [];
             for(var i = 0; i < coordinates.length; ++i) {
-                array.push(helper.extractTextureFromCanvas(
+                textures.push(helper.extractTextureFromCanvas(
                     source,
-                    coordinates[i].x * resolution * scale,
-                    coordinates[i].y * resolution * scale,
-                    resolution * scale,
-                    resolution * scale
+                    coordinates[i].x * tileResolution * scale,
+                    coordinates[i].y * tileResolution * scale,
+                    tileResolution * scale,
+                    tileResolution * scale
                 ));
             }
+            return textures;
+        }
+
+        function lineSprites(nbSprites) {
+            var sprites = [];
+            for(var i = 0; i < nbSprites; ++i) {
+                sprites.push({x: i, y: 0});
+            }
+            return sprites;
         }
 
         // Load stones
-        var stones = [];
-        loadGroupOfTextures(stones, textures.stones.baseTexture.source, 2, [
-            { x: 0, y: 0 },
-            { x: 1, y: 0 },
-            { x: 2, y: 0 },
-            { x: 3, y: 0 }
-        ]);
-        textures.stones = stones;
+        textures.stones = loadGroupOfTextures(textures.stones.baseTexture.source, 2, lineSprites(4));
 
         // Load gems
-        var gems = [];
-        loadGroupOfTextures(gems, textures.gems.baseTexture.source, 2, [
-            { x: 0, y: 0 },
-            { x: 1, y: 0 },
-            { x: 2, y: 0 }
-        ]);
-        textures.gems = gems;
+        textures.gems = loadGroupOfTextures(textures.gems.baseTexture.source, 2, lineSprites(3));
 
         // Load grass
-        textures.grass = [];
-        loadGroupOfTextures(textures.grass, textures.tileset.baseTexture.source, 1, [
+        textures.grass = loadGroupOfTextures(textures.tileset.baseTexture.source, 1, [
             { x: 2, y: 2 },
             { x: 6, y: 4 },
             { x: 7, y: 4 },
@@ -66,25 +60,16 @@ define(function(require) {
         ]);
 
         // Load bug
-        var bugTextures = [];
-        loadGroupOfTextures(bugTextures, textures.bug.baseTexture.source, 4, [
+        var spritesDirection = [
             { x: 1, y: 0 },
             { x: 0, y: 1 },
             { x: 0, y: 0 },
             { x: 1, y: 1 }
-        ]);
-        textures.bug = bugTextures;
+        ];
+        textures.bug = loadGroupOfTextures(textures.bug.baseTexture.source, 4, spritesDirection);
 
         // Load robot
-        var launcherTextures = [];
-        loadGroupOfTextures(launcherTextures, textures.launcher.baseTexture.source, 2, [
-            { x: 1, y: 0 },
-            { x: 0, y: 1 },
-            { x: 0, y: 0 },
-            { x: 1, y: 1 }
-        ]);
-        textures.launcher = launcherTextures;
-
+        textures.launcher = loadGroupOfTextures(textures.launcher.baseTexture.source, 2, spritesDirection);
 
     }
 
@@ -128,6 +113,20 @@ define(function(require) {
         this.stage = null;
         this.animationDuration = 500;
         this.sprites = [];
+        this.squareSize = 0;
+        this.tilesScale = 0;
+        this.canvasWidth = 600;
+        this.resolutionChanged = false;
+
+    }
+
+    canvasHandler.prototype.setResolution = function setResolution(resolution) {
+
+        if (resolution !== this.canvasWidth) {
+            this.resolutionChanged = true;
+            this.canvasWidth = resolution;
+            this.setState(this.state, this.actors);
+        }
 
     }
 
@@ -141,7 +140,6 @@ define(function(require) {
             self.sprites['bug'] = sprite;
             sprite.anchor.set(0.5, 0.6);
             sprite.realRotation = 0;
-            sprite.scale.set(0.3 / tilesScale, 0.3 / tilesScale);
 
             onInitialized();
         });
@@ -150,8 +148,8 @@ define(function(require) {
 
     canvasHandler.prototype.moveSquareSprite = function moveSquareSprite(sprite, x, y) {
 
-        sprite.x = ( x + 1 ) * squareSize;
-        sprite.y = ( y + 1 ) * squareSize;
+        sprite.x = ( x + 1 ) * this.squareSize;
+        sprite.y = ( y + 1 ) * this.squareSize;
 
     }
 
@@ -179,36 +177,42 @@ define(function(require) {
 
     canvasHandler.prototype.drawGround = function drawGround() {
 
-        var resX = this.state.res.x * 2 + 2,
-            resY = this.state.res.y * 2 + 2;
+        var halfSquareSize = this.squareSize * 0.5;
 
-        var resolution = squareSize * tilesScale;
+        var resX = this.state.res.x * 2 + 2,
+            resY = this.state.res.y * 2 + 2,
+            canvasHeight = this.canvasWidth * (this.state.res.y + 1) / (this.state.res.x + 1);
+
         this.stage.removeChild(this.sprites.ground);
 
-        var halfSquareSize = resolution * 0.5;
-        function drawAutotilePart(context, source, autotile, tile, coordinates) {
-            var top = (autotile.y * 6 + tile.y) * halfSquareSize,
-                left = (autotile.x * 4 + tile.x) * halfSquareSize;
+        var halfTileResolution = tileResolution * 0.5;
+        function drawAutotilePart(context, source, autotile, tile, coordinates, autotileX, autotileY) {
+            var top = (autotile.y * 6 + tile.y) * halfTileResolution,
+                left = (autotile.x * 4 + tile.x) * halfTileResolution;
 
-            context.drawImage(source, left, top, halfSquareSize, halfSquareSize, coordinates.x, coordinates.y, halfSquareSize, halfSquareSize);
+            context.drawImage(source, left, top, halfTileResolution, halfTileResolution, coordinates.x * autotileX, coordinates.y * autotileY, autotileX, autotileY);
         }
         var groundCanvas = document.createElement('canvas');
-        groundCanvas.width = resX * resolution;
-        groundCanvas.height = resY * resolution;
+        groundCanvas.width = this.canvasWidth;
+        groundCanvas.height = canvasHeight;
         var context = groundCanvas.getContext('2d');
 
 
         // Draw the ground
-        var maxX = resX * 2,
-            maxY = resY * 2,
+        var nbTilesX = Math.ceil(this.canvasWidth / 32),
+            nbTilesY = Math.ceil(canvasHeight / 32),
+            nbAutoTilesX = nbTilesX * 2,
+            nbAutoTilesY = nbTilesY * 2,
+            autotileX = this.canvasWidth / nbAutoTilesX,
+            autotileY = canvasHeight / nbAutoTilesY
             tile = {x: 0, y:0};
-        for (var x = 0; x < maxX; ++x) {
+        for (var x = 0; x < nbAutoTilesX; ++x) {
 
-            tile.x = (0 === x) ? 0 : (maxX - 1 === x) ? 3 : 1 + x % 2;
-            for (var y = 0; y < maxY; ++y) {
+            tile.x = (0 === x) ? 0 : (nbAutoTilesX - 1 === x) ? 3 : 1 + x % 2;
+            for (var y = 0; y < nbAutoTilesY; ++y) {
 
-                tile.y = (0 === y) ? 2 : (maxY - 1 === y) ? 5 : 3 + y % 2;
-                drawAutotilePart(context, textures.grounds.baseTexture.source, { x: 5, y: 3 }, { x: tile.x, y:tile.y }, { x: x * halfSquareSize, y: y * halfSquareSize });
+                tile.y = (0 === y) ? 2 : (nbAutoTilesY - 1 === y) ? 5 : 3 + y % 2;
+                drawAutotilePart(context, textures.grounds.baseTexture.source, { x: 5, y: 3 }, { x: tile.x, y:tile.y }, { x: x, y: y }, autotileX, autotileY);
 
             }
 
@@ -216,13 +220,13 @@ define(function(require) {
 
         // Add sand
         context.globalAlpha = 0.5;
-        var sandRes = textures.sand.width * 0.5;
-        if (groundCanvas.width + resolution >= sandRes && groundCanvas.height + resolution >= sandRes) {
+        var sandRes = this.squareSize * 3;
+        if (groundCanvas.width + this.squareSize >= sandRes && groundCanvas.height + this.squareSize >= sandRes) {
             var nb = 12 + Math.round(this.rand() * 12);
             for (var i = 0; i < nb; ++i) {
-                var x = halfSquareSize + (groundCanvas.width - resolution - sandRes) * this.rand(),
-                    y = halfSquareSize + (groundCanvas.height - resolution - sandRes) * this.rand();
-                context.drawImage(textures.sand.baseTexture.source, 0, 0, sandRes * 2, sandRes * 2, x, y, sandRes, sandRes);
+                var x = (groundCanvas.width - sandRes) * this.rand(),
+                    y = (groundCanvas.height - sandRes) * this.rand();
+                context.drawImage(textures.sand.baseTexture.source, 0, 0, textures.sand.width, textures.sand.height, x, y, sandRes, sandRes);
             }
         }
 
@@ -235,7 +239,7 @@ define(function(require) {
                     var posX = x + 0.5 + (this.rand() - 0.5) * 0.3,
                         posY = y + 0.5 + (this.rand() - 0.5) * 0.3;
                     var texture = textures.grass[Math.floor(textures.grass.length * this.rand())];
-                    context.drawImage(texture.baseTexture.source, 0, 0, resolution, resolution, posX * resolution - halfSquareSize, posY * resolution - halfSquareSize, resolution, resolution);
+                    context.drawImage(texture.baseTexture.source, 0, 0, 32, 32, posX * 32 - 16, posY * 32 - 16, 32, 32);
                 }
 
             }
@@ -246,21 +250,20 @@ define(function(require) {
         context.setLineDash([4, 4]);
         context.beginPath();
         for (var x = 0; x <= this.state.res.x; ++x) {
-            var pos = resolution + x * resolution * 2;
-            context.moveTo(pos, resolution);
-            context.lineTo(pos, resolution + this.state.res.y * resolution * 2);
+            var pos = halfSquareSize + x * this.squareSize;
+            context.moveTo(pos, halfSquareSize);
+            context.lineTo(pos, halfSquareSize + this.state.res.y * this.squareSize);
         }
         for (var y = 0; y <= this.state.res.y; ++y) {
-            var pos = resolution + y * resolution * 2;
-            context.moveTo(resolution, pos);
-            context.lineTo(resolution + this.state.res.x * resolution * 2, pos);
+            var pos = halfSquareSize + y * this.squareSize;
+            context.moveTo(halfSquareSize, pos);
+            context.lineTo(halfSquareSize + this.state.res.x * this.squareSize, pos);
         }
         context.stroke();
 
         var texture = PIXI.Texture.fromCanvas(groundCanvas);
         var sprite = new PIXI.Sprite(texture);
         this.sprites.ground = sprite;
-        sprite.scale.set(0.5 / tilesScale, 0.5 / tilesScale);
 
     }
 
@@ -329,7 +332,7 @@ define(function(require) {
         var sprite = null,
             texture = null,
             alpha = 1,
-            scale = 0.5;
+            scale = 1;
 
         if (isNaN(square.type)){
             switch(square.type) {
@@ -365,7 +368,7 @@ define(function(require) {
 
         if(texture !== null) {
             sprite = new PIXI.Sprite(texture);
-            sprite.scale.set(scale / tilesScale, scale / tilesScale);
+            sprite.scale.set(scale / this.tilesScale, scale / this.tilesScale);
             sprite.anchor.set(0.5, 0.5);
             sprite.alpha = alpha;
             this.stage.addChild(sprite);
@@ -390,12 +393,17 @@ define(function(require) {
 
     canvasHandler.prototype.setState = function setState(state, actors) {
 
+        // Update state
     	var changeSize = true;
-    	if(this.state != null && state.res.x == this.state.res.x && state.res.y == this.state.res.y) {
+    	if(this.state != null && state.res.x == this.state.res.x && state.res.y == this.state.res.y && !this.resolutionChanged) {
     		changeSize = false;
     	}
+        this.resolutionChanged = false;
         this.state = state;
         this.actors = actors;
+        this.squareSize = this.canvasWidth / (this.state.res.x + 1);
+        this.tilesScale = 64 / this.squareSize;
+
         this.rand = helper.lcg(this.state.res.x * this.state.res.y);
 
         this.stage = new PIXI.Container();
@@ -411,9 +419,10 @@ define(function(require) {
             }
         }
 
+        // Draw the ground
         if(changeSize) {
-        	this.drawGround();
-        	this.renderer.resize(this.sprites.ground.width, this.sprites.ground.height);
+            this.drawGround();
+            this.renderer.resize(this.sprites.ground.width, this.sprites.ground.height);
         }
         this.stage.addChildAt(this.sprites.ground, 0);
 
@@ -422,7 +431,10 @@ define(function(require) {
             if (actors[a].type === 'l') {
                 state.bug.dir = actors[0].dir;
             }
-        } // TODO : use state.bug.dir ?
+        }
+        this.sprites.bug.scale.set(0.5 / this.tilesScale, 0.5 / this.tilesScale);
+
+        // TODO : use state.bug.dir ?
         var rotation = helper.dirToRotation(state.bug.dir);
         this.setBugRotation(rotation);
         this.stage.addChild(this.sprites.bug);
@@ -461,7 +473,7 @@ define(function(require) {
         var sprite = new PIXI.Sprite(texture);
         sprite.anchor.set(0.5, 0.5);
         sprite.rotation = rotationFrom;
-        sprite.scale.set(0.5 / tilesScale, 0.5 / tilesScale);
+        sprite.scale.set(1 / this.tilesScale, 1 / this.tilesScale);
         this.moveSquareSprite(sprite, posFrom.x, posFrom.y);
         this.stage.addChild(sprite);
 
@@ -515,8 +527,8 @@ define(function(require) {
                 rotation: rotationFrom
             },
             to: {
-                x: ( pos.x + 1 ) * squareSize,
-                y: ( pos.y + 1 ) * squareSize,
+                x: ( pos.x + 1 ) * this.squareSize,
+                y: ( pos.y + 1 ) * this.squareSize,
                 rotation: rotation
             },
             onUpdate: function() {
