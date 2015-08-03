@@ -233,6 +233,7 @@ angular.module('starter.controllers', [])
 
         Canvas.ready = initGame;
         function initGame() {
+            Canvas.handler.setResolution(Settings.canvasResolution);
             var url = Settings.host + '/challenge/' + $scope.challenge + '?callback=JSON_CALLBACK';
             $http.jsonp(url)
                 .success(function(data) {
@@ -270,8 +271,15 @@ angular.module('starter.controllers', [])
         $scope.deleteFuncTabletLast = deleteFuncTabletLast;
     })
 
-    .controller('SettingsCtrl', function($scope, Settings) {
+    .controller('SettingsCtrl', function($scope, Settings, Canvas) {
         $scope.settings = Settings;
+        $scope.resolutions = [300, 450, 600, 750, 900];
+
+        $scope.updateCanvasResolution = function updateCanvasResolution() {
+            if (Canvas.isReady) {
+                Canvas.handler.setResolution(Settings.canvasResolution);
+            }
+        }
     })
 
     .controller('EditorCtrl', function($scope, LevelEditor) {

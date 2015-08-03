@@ -125,7 +125,9 @@ define(function(require) {
         if (resolution !== this.canvasWidth) {
             this.resolutionChanged = true;
             this.canvasWidth = resolution;
-            this.setState(this.state, this.actors);
+            if (this.state !== null) {
+                this.setState(this.state, this.actors);
+            }
         }
 
     }
