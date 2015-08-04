@@ -37,7 +37,7 @@
                                 <md-card-content>
                                     <div class="grid" gridster="gridsterOpts">
                                         <ul>
-                                            <li gridster-item="item.gridster" ng-repeat="item in tablet.items">
+                                            <li gridster-item="item.gridster" ng-repeat="item in tablet.items" id="{{ item.id }}" class="tomette">
                                                 <img ng-src="{{ getTometteUrl(item.icon) }}" alt="{{ item.icon }}" style="width:100%"/>
                                             </li>
                                         </ul>
@@ -54,7 +54,7 @@
                                 <md-card-content>
                                     <div class="grid" gridster="gridsterOptsFunction">
                                         <ul>
-                                            <li gridster-item="item.gridster" ng-repeat="item in tabletFunction.items">
+                                            <li gridster-item="item.gridster" ng-repeat="item in tabletFunction.items" id="{{ item.id }}" class="tomette">
                                                 <img ng-src="{{ getTometteUrl(item.icon) }}" alt="{{ item.icon }}" style="width:100%"/>
                                             </li>
                                         </ul>

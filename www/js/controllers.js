@@ -2,6 +2,7 @@ angular.module('starter.controllers', [])
 
     .controller('ChallengeCtrl', function($scope, $stateParams, $state, $http, Settings, Canvas, $mdDialog) {
 
+        var tometteId = 0;
         $scope.challenge = $stateParams.challenge;
         var str = location.search;
         $scope.functionOn = str.search("/\?f=1")!=-1;
@@ -36,14 +37,21 @@ angular.module('starter.controllers', [])
 
             function tabletToInstructions(tablet, handleFunction) {
 
-                var commands = [];
+                var index = 0,
+                    commands = [];
                 for (var i = 0; i < tablet.items.length; ++i) {
-                    var instruction = tablet.items[i].icon,
-                        currentCommand = '';
+                    var tomette = tablet.items[i],
+                        instruction = tomette.icon,
+                        currentCommand = '',
+                        currentIndex = index;
                     if (instruction.indexOf('repeat_') != -1) {
                         var nbOfRepeat = instruction.split('_')[1];
                         if (commands.length > 0) {
-                            currentCommand = '(' + commands.pop() + ')' + nbOfRepeat;
+                            var previousCommand = commands.pop();
+                            index -= previousCommand.command.length + 1;
+                            currentIndex = index + 1;
+                            currentCommand = '(' + previousCommand.command + ')' + nbOfRepeat;
+                            tomette = previousCommand.tomette;
                         }
                     }
                     else if (instruction === 'function') {
@@ -55,29 +63,64 @@ angular.module('starter.controllers', [])
                         currentCommand = $scope.tomettesCmd[instruction];
                     }
                     if (currentCommand !== '') {
-                        commands.push(currentCommand);
+                        commands.push({
+                            command: currentCommand,
+                            tomette: tomette,
+                            index: currentIndex
+                        });
+                        index += currentCommand.length + 1;
                     }
                 }
                 return commands;
 
             }
 
-            var instructions = [];
+            var instructions = [],
+                instructionsToTomettes = {}
+                index = 0;
 
             // Add function declaration (if any)
-            var functionInstructions = tabletToInstructions($scope.tabletFunction, false);
-            if (functionInstructions.length > 0) {
-                instructions.push('F[' + functionInstructions.join(' ') + ']');
+            var functionCommands = tabletToInstructions($scope.tabletFunction, false);
+            if (functionCommands.length > 0) {
+                var commands = [];
+                functionCommands.forEach(function(element) {
+                    commands.push(element.command);
+                    element.index += 2;
+                    instructionsToTomettes[element.index] = element;
+                });
+                var functionString = 'F[' + commands.join(' ') + ']';
+                instructions.push(functionString);
+                index = functionString.length + 1;
             }
 
             // Add instructions
-            instructions = instructions.concat(tabletToInstructions($scope.tablet, true));
+            var tabletCommands = tabletToInstructions($scope.tablet, true);
+            tabletCommands.forEach(function(element) {
+                instructions.push(element.command);
+                element.index += index;
+                instructionsToTomettes[element.index] = element;
+            });
             var command = instructions.join(' ');
+
+            console.log(command);
+
+
+            Canvas.game.onNewInstruction = function onNewInstruction(location) {
+
+                var command = instructionsToTomettes[location.column];
+                console.log(command, location.column, instructionsToTomettes);
+                $('.tometteCurrent, .tometteFail').removeClass('tometteCurrent').removeClass('tometteFail');
+                if(typeof command !== 'undefined') {
+                    $('#' + command.tomette.id).addClass('tometteCurrent');
+                }
+
+            };
 
             // Try the challenge with the web service
             var url = Settings.host + '/challenge/'+$scope.challenge+'/command/' + command + '?callback=JSON_CALLBACK';
             $http.jsonp(url)
                 .success(function(data) {
+
                     if (data.error){
                         console.log(data.error);
                         return;
@@ -85,6 +128,9 @@ angular.module('starter.controllers', [])
                     if(Canvas.isReady) {
                         Canvas.game.parseChallengeTry(data, function() {
                             $scope.result = data;
+                            if(!data.win) {
+                                $('.tometteCurrent').removeClass('tometteCurrent').addClass('tometteFail');
+                            }
                             $scope.showScoreDialog();
                         });
                     }
@@ -170,7 +216,8 @@ angular.module('starter.controllers', [])
                         row: Math.floor(id / tablet.rowSize),
                         col: id % tablet.colSize
                     },
-                    icon: icon
+                    icon: icon,
+                    id: 'tomette-' + tometteId++
                 });
             }
 

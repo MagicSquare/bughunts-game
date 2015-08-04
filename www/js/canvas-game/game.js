@@ -15,7 +15,7 @@ define(function(require) {
 	function Game(canvasHandler) {
 
 		this.canvasHandler = canvasHandler;
-
+		this.onNewInstruction = function() {};
 		this.initialState = new State(new Point(15, 8));
 
 	}
@@ -158,6 +158,8 @@ define(function(require) {
 				case 'del':
 					this.canvasHandler.removeSquare(animation.pos.x, animation.pos.y, completeCallback);
 					break;
+				case 'instruction':
+					this.onNewInstruction(animation.location);
 			}
 		}
 	}

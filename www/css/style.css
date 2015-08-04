@@ -1,10 +1,5 @@
 /* Empty. Add your own CSS if you like */
 
-.gridster-item {
-	/*background-color:#555;
-	border-radius: 5px;*/
-}
-
 button.icon {
 	font-size: 25px !important;
 }
@@ -30,4 +25,17 @@ button.icon {
 	padding: 5px;
 	color: #007aff;
 	font-size: large;
+}
+
+.tablet .tomette img {
+    transition: background-color 250ms linear;
+    border-radius: 8px;
+}
+
+.tablet .tometteCurrent img {
+	background-color: #AFD9A5;
+}
+
+.tablet .tometteFail img {
+	background-color: #D9ABA5;
 }
