@@ -2,6 +2,9 @@
 
     <md-dialog-content>
         <div layout="row">
+            <div ng-if="result.win" flex="30">
+                <img style="width: 100%" src="img/cox_happy.gif" alt="Coxy win"/>
+            </div>
             <div flex>
                 <h2 class="md-display-4">{{result.win ? "Bravo !" : "BUG !"}}</h2>
                 <p class="md-display-2" ng-class="{balanced: result.win}">
