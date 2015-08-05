@@ -26,10 +26,15 @@
                                 </md-card-content>
                             </md-card>
 
-                        </div>
-                        <div>
-                            <md-button aria-label="Reset" class="md-fab md-primary md-hue-2 icon ion-refresh" on-touch="askReset()"></md-button>
-                            <md-button aria-label="Play" class="md-fab md-primary icon ion-play" on-touch="run()"></md-button>
+                            <div layout="row" layout-align="center center" hide-sm>
+                                <md-button aria-label="Reset" class="md-fab md-primary md-hue-2 icon ion-refresh" on-touch="askReset()"></md-button>
+                                <md-button aria-label="Play" class="md-fab md-primary icon ion-play" on-touch="run()"></md-button>
+                            </div>
+                            <div layout="row" layout-align="space-around center" hide-gt-sm>
+                                <md-button aria-label="Reset" class="md-fab md-mini md-primary md-hue-2 icon ion-refresh" on-touch="askReset()"></md-button>
+                                <md-button aria-label="Play" class="md-fab md-mini md-primary icon ion-play" on-touch="run()"></md-button>
+                            </div>
+
                         </div>
                         <div flex="100" flex-sm="65">
 
@@ -82,7 +87,7 @@
                                             href="https://www.facebook.com/LaChasseAuxBugs">La Chasse Aux Bugs</a></blockquote>
                                 </div>
                             </div>
-                            <div flex="67" flex-sm="100">
+                            <div flex="67" flex-sm="100" style="text-align: right">
                                 <a href="http://fr.ulule.com/chasseauxbugs" target="_blank" style="margin: auto;">
                                     <md-button aria-label="Ulule" class="md-raised">Aidez nous en participant à la collecte</md-button><!--
                                     --><img border="0" alt="Ulule" src="img/ulule.png" width="50" height="50">
