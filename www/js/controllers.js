@@ -102,13 +102,10 @@ angular.module('starter.controllers', [])
             });
             var command = instructions.join(' ');
 
-            console.log(command);
-
 
             Canvas.game.onNewInstruction = function onNewInstruction(location) {
 
                 var command = instructionsToTomettes[location.column];
-                console.log(command, location.column, instructionsToTomettes);
                 $('.tometteCurrent, .tometteFail').removeClass('tometteCurrent').removeClass('tometteFail');
                 if(typeof command !== 'undefined') {
                     $('#' + command.tomette.id).addClass('tometteCurrent');
