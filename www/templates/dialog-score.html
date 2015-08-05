@@ -2,8 +2,8 @@
 
     <md-dialog-content>
         <div layout="row">
-            <div ng-if="result.win" flex="30">
-                <img style="width: 100%" src="img/cox_happy.gif" alt="Coxy win"/>
+            <div flex="30">
+                <img style="width: 100%" src="{{result.win ? 'img/cox_happy.gif' : 'img/cox_sad.gif'}}" alt="Coxy win"/>
             </div>
             <div flex>
                 <h2 class="md-display-4">{{result.win ? "Bravo !" : "BUG !"}}</h2>
