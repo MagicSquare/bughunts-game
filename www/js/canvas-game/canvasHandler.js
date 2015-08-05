@@ -192,7 +192,7 @@ define(function(require) {
             var top = (autotile.y * 6 + tile.y) * halfTileResolution,
                 left = (autotile.x * 4 + tile.x) * halfTileResolution;
 
-            context.drawImage(source, left, top, halfTileResolution, halfTileResolution, coordinates.x * autotileX, coordinates.y * autotileY, autotileX, autotileY);
+            context.drawImage(source, left, top, halfTileResolution, halfTileResolution, Math.floor(coordinates.x * autotileX), Math.floor(coordinates.y * autotileY), Math.ceil(autotileX), Math.ceil(autotileY));
         }
         var groundCanvas = document.createElement('canvas');
         groundCanvas.width = this.canvasWidth;
