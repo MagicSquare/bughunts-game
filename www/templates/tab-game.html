@@ -14,6 +14,11 @@
                     <div flex flex-gt-sm="33" layout="row" layout-wrap>
                         <div flex="100" flex-sm="35">
 
+                            <div layout="row" layout-align="space-around center" hide-gt-sm>
+                                <md-button aria-label="Reset" class="md-fab md-mini md-primary md-hue-2 icon ion-refresh" on-touch="askReset()"></md-button>
+                                <md-button aria-label="Play" class="md-fab md-mini md-primary icon ion-play" on-touch="run()"></md-button>
+                            </div>
+
                             <md-card flex class="available-tomettes">
                                 <md-card-content layout="row" layout-wrap>
                                     <div flex="20" flex-sm="50" ng-repeat="tomette in tomettes">
@@ -29,10 +34,6 @@
                             <div layout="row" layout-align="center center" hide-sm>
                                 <md-button aria-label="Reset" class="md-fab md-primary md-hue-2 icon ion-refresh" on-touch="askReset()"></md-button>
                                 <md-button aria-label="Play" class="md-fab md-primary icon ion-play" on-touch="run()"></md-button>
-                            </div>
-                            <div layout="row" layout-align="space-around center" hide-gt-sm>
-                                <md-button aria-label="Reset" class="md-fab md-mini md-primary md-hue-2 icon ion-refresh" on-touch="askReset()"></md-button>
-                                <md-button aria-label="Play" class="md-fab md-mini md-primary icon ion-play" on-touch="run()"></md-button>
                             </div>
 
                         </div>
