@@ -153,7 +153,23 @@ angular.module('starter.controllers', [])
         function showScoreDialogController($scope, $mdDialog, result){
             $scope.result = result;
             $scope.user = {};
-            $scope.highscore = false;
+            $scope.newHighscore = false;
+            $scope.highscore;
+            $scope.highscoreOwner;
+
+            $http.jsonp(Settings.host + '/highscores/'+$scope.result.challenge.substr(1)+ '?callback=JSON_CALLBACK')
+                .success(function(data) {
+                    if (!data.error){
+                        $scope.highscore = data[0].score;
+                        $scope.highscoreOwner = data[0].name;
+                        if (parseInt($scope.highscore) > parseInt($scope.result.score)){
+                            $scope.newHighscore = true;
+                        }
+                    }
+                })
+                .error(function(data, status) {
+                    console.log('Loading command result: Error ' + status);
+                });
             $scope.retryChallenge = function(){
                 $mdDialog.hide();
             }
@@ -167,14 +183,14 @@ angular.module('starter.controllers', [])
             };
 
             $scope.recordHighScore = function(){
-                var url = Settings.host + '/challenge/'+$scope.result.challenge.substr(1)+'/newHighScore/' + $scope.user.name + '?callback=JSON_CALLBACK';
+
                 $http({
                     method: 'jsonp',
-                    url: url,
+                    url: Settings.host + '/challenge/'+$scope.result.challenge.substr(1)+'/newHighScore/' + $scope.user.name + '?callback=JSON_CALLBACK',
                     params: { token: $scope.result.token }
                 })
                     .success(function(data, status , header, config) {
-                        $scope.highscore = true;
+                        $scope.newHighscore = false;
                     })
                     .error(function(data, status , header, config) {
                         console.log('record highscore result: Error ' + status);
