@@ -77,7 +77,7 @@ angular.module('starter.controllers', [])
 
             var instructions = [],
                 instructionsToTomettes = {}
-                index = 0;
+            index = 0;
 
             // Add function declaration (if any)
             var functionCommands = tabletToInstructions($scope.tabletFunction, false);
@@ -152,6 +152,8 @@ angular.module('starter.controllers', [])
 
         function showScoreDialogController($scope, $mdDialog, result){
             $scope.result = result;
+            $scope.user = {};
+            $scope.highscore = false;
             $scope.retryChallenge = function(){
                 $mdDialog.hide();
             }
@@ -163,6 +165,21 @@ angular.module('starter.controllers', [])
                 nextChallenge = '0x'+nextChallenge;
                 $state.go("tab.challenge", {challenge : nextChallenge});
             };
+
+            $scope.recordHighScore = function(){
+                var url = Settings.host + '/challenge/'+$scope.result.challenge.substr(1)+'/newHighScore/' + $scope.user.name + '?callback=JSON_CALLBACK';
+                $http({
+                    method: 'jsonp',
+                    url: url,
+                    params: { token: $scope.result.token }
+                })
+                    .success(function(data, status , header, config) {
+                        $scope.highscore = true;
+                    })
+                    .error(function(data, status , header, config) {
+                        console.log('record highscore result: Error ' + status);
+                    });
+            }
         };
 
         function addIntToHexa(i, hexaNumber){
