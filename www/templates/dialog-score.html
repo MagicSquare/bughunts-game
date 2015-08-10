@@ -13,8 +13,23 @@
                 <div class="md-display-4" ng-if="result.win" style="text-align: center;">
                     {{result.score}}
                 </div>
+                <div layout="row" ng-if="newHighscore">
+                    <md-divider></md-divider>
+                    <p ng-if="newHighscore">
+                        Félicitation c'est le meilleur score !
+                    </p>
+                    <div flex layout layout-sm="column">
+                        <form name="recordHighScoreForm" ng-submit="recordHighScore()">
+                            <md-input-container style="width:30em;">
+                                <label>Donne ton nom pour enregister ton score</label>
+                                    <input required ng-maxlength="30" ng-minlength="3" ng-model="user.name" name="userName" style="text-transform: uppercase;"/>
+                            </md-input-container>
+                            <md-button aria-label="Enregistrer" class="md-fab md-primary md-hue-2 icon ion-person-add"></md-button>
+                        </form>
+                    </div>
+                </div>
                 <p ng-if="highscore">
-                    Le meilleur score est {{highscore}}. Il est détenu par {{highscoreOwner}}</span>
+                    Le meilleur score {{newHighscore? "était":"est"}} {{highscore}}. Il {{newHighscore? "était":"est"}} détenu par <span style="text-transform: uppercase;">{{highscoreOwner}}</span>
                 </p>
             </div>
         </div>
@@ -22,18 +37,6 @@
         <div layout="row">
             <md-button aria-label="Réessayer?" class="md-fab md-primary md-hue-2 icon ion-loop" on-touch="retryChallenge()"></md-button>
             <md-button ng-if="result.win" aria-label="Challenge Suivant" class="md-fab md-primary md-hue-2 icon ion-skip-forward" on-touch="nextChallenge()"></md-button>
-        </div>
-        <div layout="row" ng-if="result.win && newHighscore">
-            <md-divider></md-divider>
-            <div flex layout layout-sm="column">
-                <md-input-container style="width:30em;">
-                    <form ng-submit="recordHighScore()">
-                        <label>Ton nom</label>
-                        <input type="text" maxlength="30" ng-model="user.name" style="text-transform: uppercase;">
-                    </form>
-                </md-input-container>
-                <md-button aria-label="Enregistrer" class="md-fab md-primary md-hue-2 icon ion-person-add" on-touch="recordHighScore()"></md-button>
-            </div>
         </div>
     </md-dialog-content>
 </md-dialog>

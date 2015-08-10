@@ -165,6 +165,8 @@ angular.module('starter.controllers', [])
                         if (parseInt($scope.highscore) > parseInt($scope.result.score)){
                             $scope.newHighscore = true;
                         }
+                    }else if (data.type == 1){
+                        $scope.newHighscore = true;
                     }
                 })
                 .error(function(data, status) {
@@ -183,13 +185,14 @@ angular.module('starter.controllers', [])
             };
 
             $scope.recordHighScore = function(){
-
                 $http({
                     method: 'jsonp',
                     url: Settings.host + '/challenge/'+$scope.result.challenge.substr(1)+'/newHighScore/' + $scope.user.name + '?callback=JSON_CALLBACK',
                     params: { token: $scope.result.token }
                 })
                     .success(function(data, status , header, config) {
+                        $scope.highscore = $scope.result.score;
+                        $scope.highscoreOwner =  $scope.user.name;
                         $scope.newHighscore = false;
                     })
                     .error(function(data, status , header, config) {
