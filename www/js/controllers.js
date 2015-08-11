@@ -165,16 +165,18 @@ angular.module('starter.controllers', [])
                         if (parseInt($scope.highscore) > parseInt($scope.result.score)){
                             $scope.newHighscore = true;
                         }
-                    }else if (data.type == 1){
+                    }else if ($scope.result.win && data.type == 1){
                         $scope.newHighscore = true;
                     }
                 })
                 .error(function(data, status) {
                     console.log('Loading command result: Error ' + status);
                 });
+
             $scope.retryChallenge = function(){
                 $mdDialog.hide();
             }
+
             $scope.nextChallenge = function(){
                 $mdDialog.hide();
                 var nextChallenge = $scope.result.challenge;
