@@ -162,15 +162,17 @@ angular.module('starter.controllers', [])
                     if (!data.error){
                         $scope.highscore = data[0].score;
                         $scope.highscoreOwner = data[0].name;
-                        if (parseInt($scope.highscore) > parseInt($scope.result.score)){
+                        if (parseInt($scope.highscore) > parseInt($scope.result.score) && parseInt($scope.result.score) > 0){
                             $scope.newHighscore = true;
                         }
                     }else if ($scope.result.win && data.type == 1){
                         $scope.newHighscore = true;
+                    }else{
+                        console.log('Server error while retrieving highscore : ' + data.type);
                     }
                 })
                 .error(function(data, status) {
-                    console.log('Loading command result: Error ' + status);
+                    console.log('Error while retrieving highscores : ' + status);
                 });
 
             $scope.retryChallenge = function(){
